@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ByteAlchemy — Learn & Chat</title>
+<style>
+  :root{
+    --bg:#0f1724; --card:#0b1220; --accent:#6ee7b7; --muted:#9aa4b2;
+    --glass: rgba(255,255,255,0.03);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:linear-gradient(180deg,#071025 0%, #0b1220 100%);color:#e6eef6;min-height:100vh;
+    display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;animation:fadeIn 1s ease forwards}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .app{width:100%;max-width:1100px;border-radius:14px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+  .top{display:flex;gap:16px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042029}
+  h1{margin:0;font-size:18px}
+  .lead{color:var(--muted);font-size:13px;margin-top:6px}
+  .layout{display:grid;grid-template-columns:320px 1fr 360px;gap:18px;margin-top:18px}
+  @media (max-width:1100px){ .layout{grid-template-columns: 1fr; } .right { order: 3 } }
+  .panel{background:var(--glass);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  /* auth */
+  .auth input, .auth button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+  .auth button{cursor:pointer;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;border:none;font-weight:700}
+  /* list */
+  .user-list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow:auto;padding-right:6px}
+  .user-item{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:10px;background:rgba(255,255,255,0.01)}
+  .user-item .meta{display:flex;gap:8px;align-items:center}
+  .badge{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;color:var(--muted)}
+  /* chat */
+  .chat-area{display:flex;flex-direction:column;height:65vh}
+  .messages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+  .msg{max-width:75%;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02)}
+  .msg.me{align-self:flex-end;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029}
+  .composer{display:flex;gap:8px;padding-top:8px;align-items:center}
+  .composer input[type=text]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  .composer button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;cursor:pointer}
+  .progress{height:8px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:10px}
+  .progress>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#60a5fa);transition:width .6s ease}
+  .xp{font-weight:700;color:var(--accent)}
+  .small{font-size:12px;color:var(--muted)}
+  /* file preview */
+  .file-thumb{max-width:180px;border-radius:8px;display:block}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="top">
+    <div class="logo">BA</div>
+    <div>
+      <h1>ByteAlchemy Academy</h1>
+      <div class="lead">Lerne Python, JavaScript & mehr — verdiene XP, finde Freunde und chatte.</div>
+    </div>
+    <div style="margin-left:auto;text-align:right" id="userBox"></div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT: Users / Friends / Courses -->
+    <div class="panel left">
+      <h3>Community</h3>
+      <div class="small">Freunde & Anfragen</div>
+      <div class="user-list" id="usersList"></div>
+
+      <hr style="margin:12px 0;border-color:rgba(255,255,255,0.03)" />
+      <h3>Kurse</h3>
+      <div class="small">Beispielmodule</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+        <div class="panel" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-weight:700">JavaScript Basics</div>
+            <div class="small">10 Lektionen</div>
+          </div>
+          <button onclick="completeCourse('js')">abschließen</button>
+        </div>
+        <div class="panel" style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-weight:700">Python Intro</div>
+            <div class="small">8 Lektionen</div>
+          </div>
+          <button onclick="completeCourse('py')">abschließen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: Chat -->
+    <div class="panel center" style="display:flex;flex-direction:column">
+      <h3 id="chatTitle">Lobby</h3>
+      <div class="small">Chat mit Freunden (Bilder/GIF unterstützt)</div>
+
+      <div class="chat-area">
+        <div class="messages" id="messages"></div>
+        <div class="composer">
+          <input id="msgInput" type="text" placeholder="Schreibe eine Nachricht..." />
+          <input id="fileInput" type="file" accept="image/*,image/gif" style="display:none" />
+          <button onclick="document.getElementById('fileInput').click()">📎</button>
+          <button onclick="sendMessage()">Senden</button>
+        </div>
+
+        <div class="small" style="margin-top:8px">XP: <span class="xp" id="xp">0</span></div>
+        <div class="progress"><i id="progressBar"></i></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Profile / Signup -->
+    <div class="panel right">
+      <div id="authArea">
+        <h3>Sign In / Sign Up</h3>
+        <div class="auth">
+          <input id="email" type="email" placeholder="Email" />
+          <input id="password" type="password" placeholder="Passwort" />
+          <button onclick="signup()">Sign Up</button>
+          <button onclick="signin()">Sign In</button>
+          <button onclick="signout()" style="margin-top:6px;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)">Sign Out</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <h4>Info</h4>
+        <div class="small">Chats werden in Firestore gespeichert. Bilder landen im Storage.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+<script>
+/* ========== CONFIG: Firebase eintragen ========== 
+   - Erstelle in Firebase Console ein Projekt
+   - Aktiviere Authentication (Email/Password)
+   - Erstelle Firestore (testmodus jetzt OK) und Storage
+   - Kopiere deine Firebase-Konfiguration hierher */
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
+  authDomain: "bytealchemy-2ba0b.firebaseapp.com",
+  projectId: "bytealchemy-2ba0b",
+  storageBucket: "bytealchemy-2ba0b.firebasestorage.app",
+  messagingSenderId: "1072746265613",
+  appId: "1:1072746265613:web:6804ffc6b8c81edd0e6944",
+  measurementId: "G-SRJ07SFRE7"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+/* ========== Global state ========== */
+let currentUser = null;
+let currentChatUserId = null; // chat mit Freund
+let unsubMessages = null;
+
+/* ========== Auth ========== */
+async function signup(){
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pw);
+    // create user doc
+    await db.collection('users').doc(cred.user.uid).set({
+      email: cred.user.email,
+      displayName: cred.user.email.split('@')[0],
+      xp: 0,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    alert('Signup erfolgreich');
+  } catch(e){ alert(e.message) }
+}
+
+async function signin(){
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+  } catch(e){ alert(e.message) }
+}
+
+function signout(){ auth.signOut(); }
+
+/* ========== Auth listener ========== */
+auth.onAuthStateChanged(async u => {
+  currentUser = u;
+  const userBox = document.getElementById('userBox');
+  if(u){
+    userBox.innerHTML = `<div style="text-align:right"><div>${u.email}</div><div class="small"><a href="#" onclick="profile()">Profil</a></div></div>`;
+    document.getElementById('authArea').style.display = 'none';
+    // load users list
+    loadUsers();
+    // load own XP
+    const doc = await db.collection('users').doc(u.uid).get();
+    if(doc.exists) updateXPUI(doc.data().xp || 0);
+  } else {
+    userBox.innerHTML = '';
+    document.getElementById('authArea').style.display = 'block';
+    document.getElementById('usersList').innerHTML = '';
+    stopListeningMessages();
+    document.getElementById('messages').innerHTML = '';
+    updateXPUI(0);
+  }
+});
+
+/* ========== Users & Friend Requests ========== */
+async function loadUsers(){
+  const listEl = document.getElementById('usersList');
+  listEl.innerHTML = '';
+  const q = await db.collection('users').limit(200).get();
+  q.forEach(doc => {
+    const data = doc.data();
+    if(currentUser && doc.id === currentUser.uid) return;
+    const item = document.createElement('div');
+    item.className = 'user-item';
+    item.innerHTML = `<div class="meta"><div style="width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center">${(data.displayName||'U').slice(0,2).toUpperCase()}</div>
+      <div><div style="font-weight:700">${data.displayName||data.email}</div><div class="small">${data.email||''}</div></div></div>
+      <div id="action-${doc.id}"><button onclick="sendFriendRequest('${doc.id}','${data.displayName||data.email}')">Add</button></div>`;
+    listEl.appendChild(item);
+    // show pending if exists
+    checkFriendState(doc.id);
+  });
+}
+
+async function checkFriendState(otherId){
+  if(!currentUser) return;
+  const a = await db.collection('friendRequests').doc(`${currentUser.uid}_${otherId}`).get();
+  const b = await db.collection('friendRequests').doc(`${otherId}_${currentUser.uid}`).get();
+  const el = document.getElementById(`action-${otherId}`);
+  if(!el) return;
+  if(a.exists){ el.innerHTML = '<span class="badge">Anfrage gesendet</span>'; }
+  else if(b.exists){ el.innerHTML = `<button onclick="acceptFriend('${otherId}')">Annehmen</button>`; }
+  else {
+    // also check friendship doc
+    const f = await db.collection('friendships').doc(friendDocId(currentUser.uid, otherId)).get();
+    if(f.exists){ el.innerHTML = `<button onclick="openChat('${otherId}')">Chat</button>`; }
+    else el.innerHTML = `<button onclick="sendFriendRequest('${otherId}')">Add</button>`;
+  }
+}
+
+function friendDocId(a,b){ return a < b ? `${a}_${b}` : `${b}_${a}`; }
+
+async function sendFriendRequest(otherId, displayName){
+  if(!currentUser) { alert('Bitte einloggen'); return; }
+  await db.collection('friendRequests').doc(`${currentUser.uid}_${otherId}`).set({
+    from: currentUser.uid, to: otherId, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  alert('Freundschaftsanfrage gesendet');
+  loadUsers();
+}
+
+// accept incoming request: create friendship doc and delete requests
+async function acceptFriend(otherId){
+  if(!currentUser) return;
+  const docId = friendDocId(currentUser.uid, otherId);
+  await db.collection('friendships').doc(docId).set({
+    members: [currentUser.uid, otherId], createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  // delete both requests if any
+  await db.collection('friendRequests').doc(`${otherId}_${currentUser.uid}`).delete().catch(()=>{});
+  await db.collection('friendRequests').doc(`${currentUser.uid}_${otherId}`).delete().catch(()=>{});
+  loadUsers();
+  alert('Freundschaft bestätigt — du kannst jetzt chatten');
+}
+
+/* ========== Chat logic ========== */
+function openChat(otherId){
+  currentChatUserId = otherId;
+  document.getElementById('chatTitle').textContent = 'Chat';
+  loadMessages(otherId);
+  // listen for typing/presence could be added
+}
+
+function stopListeningMessages(){
+  if(unsubMessages) { unsubMessages(); unsubMessages = null; }
+}
+
+function loadMessages(otherId){
+  stopListeningMessages();
+  document.getElementById('messages').innerHTML = '';
+  const chatId = friendDocId(currentUser.uid, otherId);
+  const col = db.collection('messages').doc(chatId).collection('chat').orderBy('createdAt','asc');
+  unsubMessages = col.onSnapshot(snap => {
+    const messagesEl = document.getElementById('messages');
+    messagesEl.innerHTML = '';
+    snap.forEach(doc => {
+      const m = doc.data();
+      const div = document.createElement('div');
+      div.className = 'msg ' + (m.from === currentUser.uid ? 'me' : '');
+      // message text or image
+      if(m.type === 'image'){
+        div.innerHTML = `<div style="font-size:12px;color:var(--muted)">${m.senderName||''}</div><img src="${m.url}" class="file-thumb" />`;
+      } else {
+        div.innerHTML = `<div style="font-size:12px;color:var(--muted)">${m.senderName||''}</div><div>${escapeHtml(m.text||'')}</div>`;
+      }
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
+  });
+}
+
+/* send message (text or image) */
+async function sendMessage(){
+  if(!currentUser){ alert('Bitte einloggen'); return; }
+  if(!currentChatUserId){ alert('Öffne zuerst einen Chat.'); return; }
+  const txt = document.getElementById('msgInput').value.trim();
+  const file = document.getElementById('fileInput').files[0];
+  const chatId = friendDocId(currentUser.uid, currentChatUserId);
+  const col = db.collection('messages').doc(chatId).collection('chat');
+
+  if(file){
+    // upload and send image message
+    const path = `chatFiles/${chatId}/${Date.now()}_${file.name}`;
+    const ref = storage.ref().child(path);
+    const snap = await ref.put(file);
+    const url = await snap.ref.getDownloadURL();
+    await col.add({
+      from: currentUser.uid, to: currentChatUserId, type: 'image', url, senderName: currentUser.email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('fileInput').value = '';
+    awardXP(5);
+    return;
+  }
+
+  if(txt.length === 0) return;
+  await col.add({
+    from: currentUser.uid, to: currentChatUserId, type: 'text', text: txt, senderName: currentUser.email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  document.getElementById('msgInput').value = '';
+  awardXP(2);
+}
+
+/* ========== XP system ========== */
+async function awardXP(amount){
+  if(!currentUser) return;
+  const userRef = db.collection('users').doc(currentUser.uid);
+  await userRef.update({ xp: firebase.firestore.FieldValue.increment(amount) });
+  const doc = await userRef.get();
+  updateXPUI(doc.data().xp || 0);
+}
+
+function updateXPUI(xp){
+  document.getElementById('xp').textContent = xp;
+  // progress bar - simple level system: each 100 XP = level up
+  const pct = Math.min(100, (xp % 100));
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+/* course completion action */
+async function completeCourse(code){
+  if(!currentUser) { alert('Bitte einloggen'); return; }
+  // award XP based on course
+  const amount = code === 'js' ? 150 : 120;
+  await awardXP(amount);
+  alert('Kurs abgeschlossen — XP erhalten!');
+}
+
+/* ========== Utils & helpers ========== */
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* file input change to auto-send */
+document.getElementById('fileInput').addEventListener('change', ()=>{
+  if(document.getElementById('fileInput').files.length) sendMessage();
+});
+
+/* initial UI */
+updateXPUI(0);
+
+</script>
+</body>
+</html>
