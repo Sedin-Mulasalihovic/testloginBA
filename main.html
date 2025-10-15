@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ByteAlchemy</title>
+  <style>
+    :root {
+      --bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;
+      --accent-dark:#34d399;--muted:#9aa4b2;
+    }
+    body {
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,#071025 0%,#0b1220 100%);
+      color:#e6eef6;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      text-align:center;
+      opacity:0;
+      animation:fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(10px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+    .logo {
+      width:70px;height:70px;border-radius:16px;
+      background:linear-gradient(135deg,var(--accent),#60a5fa);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;color:#042029;font-size:22px;margin-bottom:16px;
+    }
+    button {
+      margin-top:20px;
+      background:linear-gradient(90deg,var(--accent),#60a5fa);
+      color:#042029;border:none;
+      padding:10px 20px;border-radius:8px;
+      cursor:pointer;font-weight:600;
+      transition:0.3s;
+    }
+    button:hover {
+      background:linear-gradient(90deg,var(--accent-dark),#3b82f6);
+    }
+    .username {
+      font-size:20px;
+      font-weight:600;
+      margin-top:8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">BA</div>
+  <h1>Willkommen bei ByteAlchemy</h1>
+  <p class="username" id="usernameDisplay">Lade Benutzerinformationen...</p>
+  <button onclick="logout()">Logout</button>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Deine Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
+      authDomain: "bytealchemy-2ba0b.firebaseapp.com",
+      projectId: "bytealchemy-2ba0b",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const usernameDisplay = document.getElementById('usernameDisplay');
+
+    // Prüfen, ob User eingeloggt ist
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+      } else {
+        try {
+          const doc = await db.collection("users").doc(user.uid).get();
+          if (doc.exists) {
+            const username = doc.data().username;
+            usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
+          } else {
+            usernameDisplay.textContent = `👋 Willkommen, ${user.email}!`;
+          }
+        } catch (err) {
+          console.error(err);
+          usernameDisplay.textContent = "Fehler beim Laden des Benutzers.";
+        }
+      }
+    });
+
+    async function logout() {
+      await auth.signOut();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

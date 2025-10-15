@@ -3,167 +3,96 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ByteAlchemy — Learn & Chat</title>
+<title>ByteAlchemy — Login</title>
 <style>
-:root{--bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;--accent-dark:#34d399;--muted:#9aa4b2;--glass: rgba(255,255,255,0.03);}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-background:linear-gradient(180deg,#071025 0%,#0b1220 100%);color:#e6eef6;min-height:100vh;
-display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;animation:fadeIn 1s ease forwards}
+:root {
+  --bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;
+  --accent-dark:#34d399;--muted:#9aa4b2;--glass:rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,#071025 0%,#0b1220 100%);
+  color:#e6eef6;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;animation:fadeIn 1s ease forwards;
+}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.app{width:100%;max-width:1100px;border-radius:14px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
-.top{display:flex;gap:16px;align-items:center}
-.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042029}
-h1{margin:0;font-size:18px}
-.lead{color:var(--muted);font-size:13px;margin-top:6px}
-.layout{display:grid;grid-template-columns:320px 1fr 360px;gap:18px;margin-top:18px}
-@media (max-width:1100px){.layout{grid-template-columns:1fr}.right{order:3}}
-.panel{background:var(--glass);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);position:relative}
-.auth input,.auth button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-weight:500}
-.auth button{cursor:pointer;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;border:none;font-weight:700;transition:0.3s;}
-.auth button:hover{background:linear-gradient(90deg,var(--accent-dark),#3b82f6);}
-.user-list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow:auto;padding-right:6px}
-.user-item{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);transition:0.3s;}
-.user-item:hover{background:rgba(255,255,255,0.02);}
-.user-item .meta{display:flex;gap:8px;align-items:center}
-.badge{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;color:var(--muted)}
-.chat-area{display:flex;flex-direction:column;height:65vh;transform-origin:top;transform:scaleY(0);opacity:0;transition:all 0.4s ease;}
-.chat-area.show{transform:scaleY(1);opacity:1;}
-.messages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:75%;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);transition:0.2s;}
-.msg.me{align-self:flex-end;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029}
-.composer{display:flex;gap:8px;padding-top:8px;align-items:center}
-.composer input[type=text]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-.composer button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;cursor:pointer;transition:0.3s;}
-.composer button:hover{background:linear-gradient(90deg,var(--accent-dark),#3b82f6);}
-.progress{height:8px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:10px}
-.progress>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#60a5fa);transition:width .6s ease}
-.xp{font-weight:700;color:var(--accent)}
-.small{font-size:12px;color:var(--muted)}
-.file-thumb{max-width:180px;border-radius:8px;display:block}
-
-/* Profil Overlay Animation */
-#profilePanel{
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(0.8);
-  width:320px;
-  z-index:100;
-  background:var(--glass);
-  border:1px solid rgba(255,255,255,0.05);
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
-  opacity:0;
-  transition:all 0.3s ease;
+.card{
+  width:100%;max-width:400px;
+  border-radius:14px;padding:24px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  box-shadow:0 10px 30px rgba(2,6,23,0.6);
+  border:1px solid rgba(255,255,255,0.03);
 }
-#profilePanel.show{
-  display:block;
-  transform:translate(-50%,-50%) scale(1);
-  opacity:1;
+.logo{
+  width:70px;height:70px;border-radius:16px;
+  background:linear-gradient(135deg,var(--accent),#60a5fa);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#042029;font-size:22px;margin:0 auto 16px;
 }
-#profilePanel button{margin-top:15px;width:100%;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;border:none;padding:8px;border-radius:8px;cursor:pointer;transition:0.3s;}
-#profilePanel button:hover{background:linear-gradient(90deg,var(--accent-dark),#3b82f6);}
-
-.course-btn{padding:6px 10px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;font-weight:700;cursor:pointer;transition:0.3s;}
-.course-btn:hover{background:linear-gradient(90deg,var(--accent-dark),#3b82f6);}
-.lobby-btn{margin-top:10px;padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#042029;cursor:pointer;font-weight:700;transition:0.3s;}
-.lobby-btn:hover{background:linear-gradient(90deg,var(--accent-dark),#3b82f6);}
+h1{text-align:center;font-size:20px;margin-bottom:8px;}
+.lead{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;}
+input,button{
+  width:100%;padding:10px;margin-top:8px;
+  border-radius:8px;border:1px solid rgba(255,255,255,0.06);
+  background:transparent;color:inherit;font-weight:500;
+}
+button{
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--accent),#60a5fa);
+  color:#042029;border:none;font-weight:700;transition:0.3s;
+}
+button:hover{
+  background:linear-gradient(90deg,var(--accent-dark),#3b82f6);
+}
+.message{margin-top:12px;text-align:center;font-size:13px;color:var(--muted);}
+.hidden{display:none;}
+.profile{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+.profile .email{font-size:14px;color:var(--muted);}
+.logout-btn{margin-top:20px;width:auto;padding:8px 18px;border-radius:8px;}
+.toggle-link{
+  text-align:center;
+  margin-top:10px;
+  font-size:13px;
+  color:var(--accent);
+  cursor:pointer;
+}
+.toggle-link:hover{color:var(--accent-dark);text-decoration:underline;}
 </style>
 </head>
 <body>
-<div class="app" id="app">
-  <div class="top">
-    <div class="logo">BA</div>
-    <div>
-      <h1>ByteAlchemy Academy</h1>
-      <div class="lead">Lerne Python, JavaScript & mehr — verdiene XP, finde Freunde und chatte.</div>
-    </div>
-    <div style="margin-left:auto;text-align:right" id="userBox"></div>
-  </div>
 
-  <div class="layout">
-    <div class="panel left" id="leftPanel" style="display:none;">
-      <h3>Community</h3>
-      <div class="small">Freunde & Anfragen</div>
-      <div class="user-list" id="usersList"></div>
+<div class="card" id="authCard">
+  <div class="logo">BA</div>
+  <h1 id="formTitle">ByteAlchemy Login</h1>
+  <div class="lead" id="formLead">Lerne, chatte und wachse – beginne hier.</div>
 
-      <hr style="margin:12px 0;border-color:rgba(255,255,255,0.03)">
-      <h3>Kurse</h3>
-      <div class="small">Beispielmodule</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <div class="panel" style="display:flex;align-items:center;justify-content:space-between">
-          <div>
-            <div style="font-weight:700">JavaScript Basics</div>
-            <div class="small">10 Lektionen</div>
-          </div>
-          <button class="course-btn" onclick="completeCourse('js')">Abschließen</button>
-        </div>
-        <div class="panel" style="display:flex;align-items:center;justify-content:space-between">
-          <div>
-            <div style="font-weight:700">Python Intro</div>
-            <div class="small">8 Lektionen</div>
-          </div>
-          <button class="course-btn" onclick="completeCourse('py')">Abschließen</button>
-        </div>
-      </div>
-      <button class="lobby-btn" onclick="openLobby()">Lobby Chat öffnen</button>
-    </div>
+  <input id="username" type="text" placeholder="Benutzername" style="display:none;">
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Passwort">
 
-    <div class="panel center" id="centerPanel" style="display:none;flex-direction:column">
-      <h3 id="chatTitle">Lobby</h3>
-      <div class="small">Chat mit Freunden (Bilder/GIF unterstützt)</div>
-      <div class="chat-area">
-        <div class="messages" id="messages"></div>
-        <div class="composer">
-          <input id="msgInput" type="text" placeholder="Schreibe eine Nachricht...">
-          <input id="fileInput" type="file" accept="image/*,image/gif" style="display:none">
-          <button onclick="document.getElementById('fileInput').click()">📎</button>
-          <button onclick="sendMessage()">Senden</button>
-        </div>
-        <div class="small" style="margin-top:8px">
-          XP: <span class="xp" id="xp">0</span> | Level: <span id="level">1</span>
-        </div>
-        <div class="progress"><i id="progressBar"></i></div>
-      </div>
-    </div>
+  <button id="submitBtn" onclick="signin()">Sign In</button>
 
-    <div class="panel right">
-      <div id="authArea">
-        <h3>Sign In / Sign Up</h3>
-        <div class="auth">
-          <input id="email" type="email" placeholder="Email">
-          <input id="password" type="password" placeholder="Passwort">
-          <button onclick="signup()">Sign Up</button>
-          <button onclick="signin()">Sign In</button>
-        </div>
-      </div>
-      <div style="margin-top:12px">
-        <h4>Info</h4>
-        <div class="small">Chats werden in Firestore gespeichert. Bilder landen im Storage.</div>
-      </div>
-    </div>
+  <div class="toggle-link" onclick="toggleMode()" id="toggleLink">Noch kein Account? Jetzt registrieren</div>
+  <div class="message" id="message"></div>
+</div>
+
+<div class="card hidden" id="profileCard">
+  <div class="logo">BA</div>
+  <h1>Willkommen!</h1>
+  <div class="profile">
+    <div class="email" id="userEmail"></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 </div>
 
-<div id="profilePanel">
-  <h3 style="margin-top:0;text-align:center;">Mein Profil</h3>
-  <div style="margin-top:10px"><strong>Name:</strong> <span id="profileName"></span></div>
-  <div style="margin-top:5px"><strong>Email:</strong> <span id="profileEmail"></span></div>
-  <div style="margin-top:5px"><strong>XP:</strong> <span id="profileXP"></span></div>
-  <div style="margin-top:5px"><strong>Level:</strong> <span id="profileLevel"></span></div>
-  <button onclick="closeProfile()">Schließen</button>
-</div>
-
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
 <script>
-// ===== Firebase Setup =====
 const firebaseConfig = {
   apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
   authDomain: "bytealchemy-2ba0b.firebaseapp.com",
@@ -173,194 +102,94 @@ const firebaseConfig = {
   appId: "1:1072746265613:web:6804ffc6b8c81edd0e6944",
 };
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
-const storage=firebase.storage();
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-let currentUser=null;
-let currentChatUserId='lobby';
-let unsubMessages=null;
+const authCard = document.getElementById('authCard');
+const profileCard = document.getElementById('profileCard');
+const userEmailEl = document.getElementById('userEmail');
+const msg = document.getElementById('message');
+const usernameInput = document.getElementById('username');
+const formTitle = document.getElementById('formTitle');
+const formLead = document.getElementById('formLead');
+const submitBtn = document.getElementById('submitBtn');
+const toggleLink = document.getElementById('toggleLink');
 
-// ===== AUTH =====
-async function signup(){
-  const email=document.getElementById('email').value;
-  const pw=document.getElementById('password').value;
-  try{
-    const cred=await auth.createUserWithEmailAndPassword(email,pw);
-    await db.collection('users').doc(cred.user.uid).set({email:cred.user.email,displayName:cred.user.email.split('@')[0],xp:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    alert('Signup erfolgreich');
-  }catch(e){alert(e.message);}
+let isSignupMode = false;
+
+function toggleMode() {
+  isSignupMode = !isSignupMode;
+  if (isSignupMode) {
+    formTitle.textContent = "ByteAlchemy Registrierung";
+    formLead.textContent = "Erstelle deinen Account und wähle deinen Benutzernamen.";
+    usernameInput.style.display = "block";
+    submitBtn.textContent = "Sign Up";
+    submitBtn.onclick = signup;
+    toggleLink.textContent = "Schon registriert? Zum Login";
+  } else {
+    formTitle.textContent = "ByteAlchemy Login";
+    formLead.textContent = "Lerne, chatte und wachse – beginne hier.";
+    usernameInput.style.display = "none";
+    submitBtn.textContent = "Sign In";
+    submitBtn.onclick = signin;
+    toggleLink.textContent = "Noch kein Account? Jetzt registrieren";
+  }
+  msg.textContent = "";
 }
 
-async function signin(){
-  const email=document.getElementById('email').value;
-  const pw=document.getElementById('password').value;
-  try{await auth.signInWithEmailAndPassword(email,pw);}catch(e){alert(e.message);}
-}
-
-function signout(){auth.signOut();}
-
-// ===== AUTH STATE CHANGED =====
-auth.onAuthStateChanged(async user=>{
-  currentUser=user;
-  const userBox=document.getElementById('userBox');
-  const leftPanel=document.getElementById('leftPanel');
-  const centerPanel=document.getElementById('centerPanel');
-  const authArea=document.getElementById('authArea');
-
-  if(user){
-    userBox.innerHTML=`<div style="text-align:right"><div>${user.email}</div><div class="small"><button onclick="profile()" class="course-btn">Profil</button> <button onclick="signout()" class="course-btn">Logout</button></div></div>`;
-    authArea.style.display='none';
-    leftPanel.style.display='block';
-    centerPanel.style.display='flex';
-    loadUsers(); loadFriendRequests();
-    const doc=await db.collection('users').doc(user.uid).get();
-    if(doc.exists) updateXPUI(doc.data().xp||0);
-    openLobby();
-  }else{
-    userBox.innerHTML='';
-    authArea.style.display='block';
-    leftPanel.style.display='none';
-    centerPanel.style.display='none';
-    stopListeningMessages();
-    document.getElementById('usersList').innerHTML='';
-    document.getElementById('messages').innerHTML='';
-    updateXPUI(0);
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    const doc = await db.collection("users").doc(user.uid).get();
+    const username = doc.exists ? doc.data().username : "Unbekannt";
+    userEmailEl.textContent = `👤 ${username} (${user.email})`;
+    authCard.classList.add('hidden');
+    profileCard.classList.remove('hidden');
+  } else {
+    authCard.classList.remove('hidden');
+    profileCard.classList.add('hidden');
   }
 });
 
-// ===== PROFILE =====
-function profile() {
-  if(!currentUser) return alert('Bitte einloggen');
-  db.collection('users').doc(currentUser.uid).get().then(doc=>{
-    if(doc.exists){
-      const data = doc.data();
-      document.getElementById('profileName').textContent = data.displayName || 'Unbekannt';
-      document.getElementById('profileEmail').textContent = data.email || '';
-      document.getElementById('profileXP').textContent = data.xp || 0;
-      document.getElementById('profileLevel').textContent = Math.floor((data.xp||0)/100)+1;
-      const panel = document.getElementById('profilePanel');
-      panel.classList.add('show');
-    }
-  });
-}
-
-function closeProfile() {
-  const panel = document.getElementById('profilePanel');
-  panel.classList.remove('show');
-  setTimeout(()=>{panel.style.display='none';}, 300);
-}
-
-// ===== XP =====
-function updateXPUI(xp){
-  document.getElementById('xp').textContent=xp;
-  document.getElementById('level').textContent=Math.floor(xp/100)+1;
-  document.getElementById('progressBar').style.width=(xp%100)+'%';
-}
-async function awardXP(amount){if(!currentUser)return; const ref=db.collection('users').doc(currentUser.uid);
-await ref.update({xp:firebase.firestore.FieldValue.increment(amount)});
-const doc=await ref.get();updateXPUI(doc.data().xp||0);}
-function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ===== CHAT & ANIMATION =====
-function stopListeningMessages(){if(unsubMessages){unsubMessages();unsubMessages=null;}}
-function openLobby(){
-  currentChatUserId='lobby';
-  document.getElementById('chatTitle').textContent='Lobby';
-  const chatArea=document.querySelector('.chat-area');
-  chatArea.classList.remove('show');
-  loadMessages('lobby');
-  setTimeout(()=>{chatArea.classList.add('show');},50);
-}
-function openChat(otherId){
-  currentChatUserId=otherId;
-  document.getElementById('chatTitle').textContent='Chat';
-  const chatArea=document.querySelector('.chat-area');
-  chatArea.classList.remove('show');
-  loadMessages(friendDocId(currentUser.uid,otherId));
-  setTimeout(()=>{chatArea.classList.add('show');},50);
-}
-
-function loadMessages(chatId){
-  stopListeningMessages();document.getElementById('messages').innerHTML='';
-  let col;
-  if(chatId==='lobby'){col=db.collection('messages').doc('lobby').collection('chat').orderBy('createdAt','asc');}
-  else{col=db.collection('messages').doc(chatId).collection('chat').orderBy('createdAt','asc');}
-  unsubMessages=col.onSnapshot(snap=>{
-    const messagesEl=document.getElementById('messages');messagesEl.innerHTML='';
-    snap.forEach(doc=>{
-      const m=doc.data();
-      const div=document.createElement('div');
-      div.className='msg '+(m.from===currentUser.uid?'me':'');
-      if(m.type==='image'){div.innerHTML=`<div style="font-size:12px;color:var(--muted)">${m.senderName||''}</div><img src="${m.url}" class="file-thumb" />`;}
-      else{div.innerHTML=`<div style="font-size:12px;color:var(--muted)">${m.senderName||''}</div><div>${escapeHtml(m.text||'')}</div>`;}
-      messagesEl.appendChild(div);messagesEl.scrollTop=messagesEl.scrollHeight;
+async function signup() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  const username = document.getElementById('username').value;
+  try {
+    if (!username) throw new Error("Bitte gib einen Benutzernamen ein!");
+    const userCredential = await auth.createUserWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      username: username,
+      createdAt: new Date()
     });
-  });
-}
-
-async function sendMessage(){
-  if(!currentUser){alert('Bitte einloggen');return;}
-  if(!currentChatUserId){alert('Öffne zuerst einen Chat.');return;}
-  const txt=document.getElementById('msgInput').value.trim();
-  const file=document.getElementById('fileInput').files[0];
-  let chatId=currentChatUserId==='lobby'?'lobby':friendDocId(currentUser.uid,currentChatUserId);
-  const col=db.collection('messages').doc(chatId).collection('chat');
-  if(file){
-    const path=`chatFiles/${chatId}/${Date.now()}_${file.name}`;
-    const ref=storage.ref().child(path);
-    const snap=await ref.put(file);
-    const url=await snap.ref.getDownloadURL();
-    await col.add({from:currentUser.uid,to:currentChatUserId,type:'image',url,senderName:currentUser.email,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    document.getElementById('fileInput').value='';awardXP(5);return;
+    msg.textContent = `✅ Willkommen, ${username}!`;
+    // Weiterleitung nach erfolgreichem Signup:
+    setTimeout(() => window.location.href = "main.html", 1000);
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
   }
-  if(txt.length===0) return;
-  await col.add({from:currentUser.uid,to:currentChatUserId,type:'text',text:txt,senderName:currentUser.email,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  document.getElementById('msgInput').value='';awardXP(2);
 }
-document.getElementById('fileInput').addEventListener('change',()=>{if(document.getElementById('fileInput').files.length) sendMessage();});
 
-// ===== FRIENDS =====
-function friendDocId(a,b){return a<b?`${a}_${b}`:`${b}_${a}`;}
-async function loadUsers(){if(!currentUser)return; const listEl=document.getElementById('usersList');listEl.innerHTML='';
-const q=await db.collection('users').limit(200).get();
-q.forEach(doc=>{const data=doc.data();if(doc.id===currentUser.uid) return;
-const initials=(data.displayName||'U').slice(0,2).toUpperCase();
-const item=document.createElement('div');item.className='user-item';
-item.innerHTML=`<div class="meta"><div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)">${initials}</div><div><div style="font-weight:700">${data.displayName||data.email}</div><div class="small">${data.email||''}</div></div></div><div id="action-${doc.id}"><button class="course-btn" onclick="sendFriendRequest('${doc.id}')">Add</button></div>`;
-listEl.appendChild(item);checkFriendState(doc.id);});}
+async function signin() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+    msg.textContent = '✅ Login erfolgreich!';
+    // Weiterleitung nach erfolgreichem Login:
+    setTimeout(() => window.location.href = "main.html", 1000);
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
+  }
+}
 
-async function loadFriendRequests(){if(!currentUser) return;
-const q=await db.collection('friendRequests').where('to','==',currentUser.uid).get();
-const listEl=document.getElementById('usersList');
-q.forEach(doc=>{const req=doc.data();const div=document.createElement('div');div.className='user-item';
-div.innerHTML=`<div class="meta"><div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center">?</div><div><div class="small">Anfrage von ${req.from}</div></div></div><div><button class="course-btn" onclick="acceptFriend('${req.from}')">Annehmen</button></div>`;
-listEl.prepend(div);});}
 
-async function checkFriendState(otherId){if(!currentUser)return;
-const a=await db.collection('friendRequests').doc(`${currentUser.uid}_${otherId}`).get();
-const b=await db.collection('friendRequests').doc(`${otherId}_${currentUser.uid}`).get();
-const el=document.getElementById(`action-${otherId}`);
-if(!el)return;
-const f=await db.collection('friendships').doc(friendDocId(currentUser.uid,otherId)).get();
-if(f.exists){el.innerHTML=`<button class="course-btn" onclick="openChat('${otherId}')">Chat öffnen</button>`;}
-else if(a.exists){el.innerHTML='<span class="badge">Anfrage gesendet</span>';}
-else if(b.exists){el.innerHTML=`<button class="course-btn" onclick="acceptFriend('${otherId}')">Annehmen</button>`;}
-else{el.innerHTML=`<button class="course-btn" onclick="sendFriendRequest('${otherId}')">Add</button>`;}}
-
-async function sendFriendRequest(otherId){if(!currentUser)return alert('Bitte einloggen');
-await db.collection('friendRequests').doc(`${currentUser.uid}_${otherId}`).set({from:currentUser.uid,to:otherId,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-alert('Freundschaftsanfrage gesendet');loadUsers();}
-
-async function acceptFriend(otherId){if(!currentUser)return;
-const docId=friendDocId(currentUser.uid,otherId);
-await db.collection('friendships').doc(docId).set({members:[currentUser.uid,otherId],createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-await db.collection('friendRequests').doc(`${otherId}_${currentUser.uid}`).delete().catch(()=>{});
-await db.collection('friendRequests').doc(`${currentUser.uid}_${otherId}`).delete().catch(()=>{});
-loadUsers();alert('Freundschaft bestätigt — du kannst jetzt chatten');}
-
-// ===== COURSES =====
-async function completeCourse(code){if(!currentUser)return alert('Bitte einloggen');const amount=code==='js'?150:120;await awardXP(amount);alert('Kurs abgeschlossen — XP erhalten!');}
+async function logout() {
+  await auth.signOut();
+  msg.textContent = '👋 Du wurdest abgemeldet.';
+}
 </script>
+
 </body>
 </html>
