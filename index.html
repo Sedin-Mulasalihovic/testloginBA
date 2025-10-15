@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ByteAlchemy — Login</title>
+<style>
+:root {
+  --bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;
+  --accent-dark:#34d399;--muted:#9aa4b2;--glass:rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,#071025 0%,#0b1220 100%);
+  color:#e6eef6;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;animation:fadeIn 1s ease forwards;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card{
+  width:100%;max-width:400px;
+  border-radius:14px;padding:24px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  box-shadow:0 10px 30px rgba(2,6,23,0.6);
+  border:1px solid rgba(255,255,255,0.03);
+}
+.logo{
+  width:70px;height:70px;border-radius:16px;
+  background:linear-gradient(135deg,var(--accent),#60a5fa);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#042029;font-size:22px;margin:0 auto 16px;
+}
+h1{text-align:center;font-size:20px;margin-bottom:8px;}
+.lead{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;}
+input,button{
+  width:100%;padding:10px;margin-top:8px;
+  border-radius:8px;border:1px solid rgba(255,255,255,0.06);
+  background:transparent;color:inherit;font-weight:500;
+}
+button{
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--accent),#60a5fa);
+  color:#042029;border:none;font-weight:700;transition:0.3s;
+}
+button:hover{
+  background:linear-gradient(90deg,var(--accent-dark),#3b82f6);
+}
+.message{margin-top:12px;text-align:center;font-size:13px;color:var(--muted);}
+.hidden{display:none;}
+.profile{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+.profile .email{font-size:14px;color:var(--muted);}
+.logout-btn{margin-top:20px;width:auto;padding:8px 18px;border-radius:8px;}
+.toggle-link{
+  text-align:center;
+  margin-top:10px;
+  font-size:13px;
+  color:var(--accent);
+  cursor:pointer;
+}
+.toggle-link:hover{color:var(--accent-dark);text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="card" id="authCard">
+  <div class="logo">BA</div>
+  <h1 id="formTitle">ByteAlchemy Login</h1>
+  <div class="lead" id="formLead">Lerne, chatte und wachse – beginne hier.</div>
+
+  <input id="username" type="text" placeholder="Benutzername" style="display:none;">
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Passwort">
+
+  <button id="submitBtn" onclick="signin()">Sign In</button>
+
+  <div class="toggle-link" onclick="toggleMode()" id="toggleLink">Noch kein Account? Jetzt registrieren</div>
+  <div class="message" id="message"></div>
+</div>
+
+<div class="card hidden" id="profileCard">
+  <div class="logo">BA</div>
+  <h1>Willkommen!</h1>
+  <div class="profile">
+    <div class="email" id="userEmail"></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
+  authDomain: "bytealchemy-2ba0b.firebaseapp.com",
+  projectId: "bytealchemy-2ba0b",
+  storageBucket: "bytealchemy-2ba0b.appspot.com",
+  messagingSenderId: "1072746265613",
+  appId: "1:1072746265613:web:6804ffc6b8c81edd0e6944",
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const authCard = document.getElementById('authCard');
+const profileCard = document.getElementById('profileCard');
+const userEmailEl = document.getElementById('userEmail');
+const msg = document.getElementById('message');
+const usernameInput = document.getElementById('username');
+const formTitle = document.getElementById('formTitle');
+const formLead = document.getElementById('formLead');
+const submitBtn = document.getElementById('submitBtn');
+const toggleLink = document.getElementById('toggleLink');
+
+let isSignupMode = false;
+
+function toggleMode() {
+  isSignupMode = !isSignupMode;
+  if (isSignupMode) {
+    formTitle.textContent = "ByteAlchemy Registrierung";
+    formLead.textContent = "Erstelle deinen Account und wähle deinen Benutzernamen.";
+    usernameInput.style.display = "block";
+    submitBtn.textContent = "Sign Up";
+    submitBtn.onclick = signup;
+    toggleLink.textContent = "Schon registriert? Zum Login";
+  } else {
+    formTitle.textContent = "ByteAlchemy Login";
+    formLead.textContent = "Lerne, chatte und wachse – beginne hier.";
+    usernameInput.style.display = "none";
+    submitBtn.textContent = "Sign In";
+    submitBtn.onclick = signin;
+    toggleLink.textContent = "Noch kein Account? Jetzt registrieren";
+  }
+  msg.textContent = "";
+}
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    const doc = await db.collection("users").doc(user.uid).get();
+    const username = doc.exists ? doc.data().username : "Unbekannt";
+    userEmailEl.textContent = `👤 ${username} (${user.email})`;
+    authCard.classList.add('hidden');
+    profileCard.classList.remove('hidden');
+  } else {
+    authCard.classList.remove('hidden');
+    profileCard.classList.add('hidden');
+  }
+});
+
+async function signup() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  const username = document.getElementById('username').value;
+  try {
+    if (!username) throw new Error("Bitte gib einen Benutzernamen ein!");
+    const userCredential = await auth.createUserWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      username: username,
+      createdAt: new Date()
+    });
+    msg.textContent = `✅ Willkommen, ${username}!`;
+    // Weiterleitung nach erfolgreichem Signup:
+    setTimeout(() => window.location.href = "main.html", 1000);
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
+  }
+}
+
+async function signin() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+    msg.textContent = '✅ Login erfolgreich!';
+    // Weiterleitung nach erfolgreichem Login:
+    setTimeout(() => window.location.href = "main.html", 1000);
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
+  }
+}
+
+
+async function logout() {
+  await auth.signOut();
+  msg.textContent = '👋 Du wurdest abgemeldet.';
+}
+</script>
+
+</body>
+</html>
