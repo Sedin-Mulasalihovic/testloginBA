@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ByteAlchemy — Login</title>
+<title>ByteAlchemy — Login / Signup</title>
 <style>
 :root {
   --bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;
@@ -75,6 +75,8 @@ button:hover{
   <button id="submitBtn" onclick="signin()">Sign In</button>
 
   <div class="toggle-link" onclick="toggleMode()" id="toggleLink">Noch kein Account? Jetzt registrieren</div>
+  <div class="toggle-link" onclick="resetPassword()">Passwort vergessen?</div>
+
   <div class="message" id="message"></div>
 </div>
 
@@ -87,7 +89,6 @@ button:hover{
   </div>
 </div>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -137,8 +138,14 @@ function toggleMode() {
   msg.textContent = "";
 }
 
+// Prüfen, ob eingeloggter User existiert und E-Mail verifiziert ist
 auth.onAuthStateChanged(async (user) => {
   if (user) {
+    if (!user.emailVerified) {
+      msg.textContent = "Bitte bestätige zuerst deine E-Mail-Adresse!";
+      await auth.signOut();
+      return;
+    }
     const doc = await db.collection("users").doc(user.uid).get();
     const username = doc.exists ? doc.data().username : "Unbekannt";
     userEmailEl.textContent = `👤 ${username} (${user.email})`;
@@ -150,6 +157,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
+// Signup mit E-Mail-Verifikation
 async function signup() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
@@ -163,33 +171,49 @@ async function signup() {
       username: username,
       createdAt: new Date()
     });
-    msg.textContent = `✅ Willkommen, ${username}!`;
-    // Weiterleitung nach erfolgreichem Signup:
-    setTimeout(() => window.location.href = "main.html", 1000);
+    await user.sendEmailVerification();
+    msg.textContent = `✅ Willkommen, ${username}! Bitte überprüfe deine E-Mail für die Verifikation.`;
   } catch (e) {
     msg.textContent = '❌ ' + e.message;
   }
 }
 
+// Login mit E-Mail-Prüfung
 async function signin() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
   try {
-    await auth.signInWithEmailAndPassword(email, pw);
+    const userCredential = await auth.signInWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+    if (!user.emailVerified) {
+      msg.textContent = "Bitte bestätige zuerst deine E-Mail-Adresse!";
+      await auth.signOut();
+      return;
+    }
     msg.textContent = '✅ Login erfolgreich!';
-    // Weiterleitung nach erfolgreichem Login:
     setTimeout(() => window.location.href = "main.html", 1000);
   } catch (e) {
     msg.textContent = '❌ ' + e.message;
   }
 }
 
+// Passwort zurücksetzen
+async function resetPassword() {
+  const email = document.getElementById('email').value;
+  if (!email) return alert("Bitte gib deine E-Mail ein!");
+  try {
+    await auth.sendPasswordResetEmail(email);
+    alert("Eine E-Mail zum Zurücksetzen des Passworts wurde verschickt!");
+  } catch (e) {
+    alert(e.message);
+  }
+}
 
+// Logout
 async function logout() {
   await auth.signOut();
   msg.textContent = '👋 Du wurdest abgemeldet.';
 }
 </script>
-
 </body>
 </html>
