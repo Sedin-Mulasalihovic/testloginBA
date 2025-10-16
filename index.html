@@ -142,27 +142,23 @@ function toggleMode() {
   resendLink.classList.add('hidden');
 }
 
-// Prüfen, ob eingeloggter User existiert und E-Mail verifiziert ist
+// Auth Listener
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    if (!user.emailVerified) {
+    await user.reload(); // neu laden, damit Verifikationsstatus aktuell ist
+    if (user.emailVerified) {
+      msg.textContent = "✅ E-Mail bestätigt! Weiterleitung...";
+      setTimeout(() => window.location.href = "main.html", 1500);
+      return;
+    } else {
       msg.textContent = "⚠️ Bitte bestätige zuerst deine E-Mail-Adresse!";
       resendLink.classList.remove('hidden');
       await auth.signOut();
-      return;
     }
-    const doc = await db.collection("users").doc(user.uid).get();
-    const username = doc.exists ? doc.data().username : "Unbekannt";
-    userEmailEl.textContent = `👤 ${username} (${user.email})`;
-    authCard.classList.add('hidden');
-    profileCard.classList.remove('hidden');
-  } else {
-    authCard.classList.remove('hidden');
-    profileCard.classList.add('hidden');
   }
 });
 
-// Signup mit E-Mail-Verifikation (mit URL-Fix!)
+// Signup + E-Mail-Verifikation
 async function signup() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
@@ -187,20 +183,21 @@ async function signup() {
   }
 }
 
-// Login mit E-Mail-Prüfung
+// Login
 async function signin() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
   try {
     const userCredential = await auth.signInWithEmailAndPassword(email, pw);
     const user = userCredential.user;
+    await user.reload();
     if (!user.emailVerified) {
       msg.textContent = "⚠️ Bitte bestätige zuerst deine E-Mail-Adresse!";
       resendLink.classList.remove('hidden');
       await auth.signOut();
       return;
     }
-    msg.textContent = '✅ Login erfolgreich!';
+    msg.textContent = '✅ Login erfolgreich! Weiterleitung...';
     setTimeout(() => window.location.href = "main.html", 1000);
   } catch (e) {
     msg.textContent = '❌ ' + e.message;
@@ -221,7 +218,7 @@ async function resetPassword() {
   }
 }
 
-// Verifikationsmail erneut senden (auch mit URL)
+// Verifikationsmail erneut senden
 async function resendVerification() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
