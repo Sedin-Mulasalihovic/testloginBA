@@ -136,6 +136,72 @@ auth.onAuthStateChanged(async (user) => {
 handleVerificationFromURL();
 
 // Rest: signup, signin, logout etc. bleibt unverändert
+// Signup + E-Mail-Verifikation
+async function signup() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  const username = document.getElementById('username').value;
+  try {
+    if (!username) throw new Error("Bitte gib einen Benutzernamen ein!");
+    const userCredential = await auth.createUserWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      username: username,
+      createdAt: new Date()
+    });
+    await user.sendEmailVerification({
+      url: "https://DEINE-URL/index.html", // Link zu deiner index.html
+      handleCodeInApp: true
+    });
+    msg.textContent = `✅ Willkommen, ${username}! Bitte überprüfe deine E-Mail für die Verifikation.`;
+    resendLink.classList.remove('hidden');
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
+  }
+}
+
+// Login
+async function signin() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+    await user.reload();
+    if (!user.emailVerified) {
+      msg.textContent = "⚠️ Bitte bestätige zuerst deine E-Mail-Adresse!";
+      resendLink.classList.remove('hidden');
+      await auth.signOut();
+      return;
+    }
+    msg.textContent = '✅ Login erfolgreich! Weiterleitung...';
+    setTimeout(() => window.location.href = "main.html", 1000);
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
+  }
+}
+
+// Passwort zurücksetzen
+async function resetPassword() {
+  const email = document.getElementById('email').value;
+  if (!email) return alert("Bitte gib deine E-Mail ein!");
+  try {
+    await auth.sendPasswordResetEmail(email, {
+      url: "https://DEINE-URL/index.html"
+    });
+    alert("Eine E-Mail zum Zurücksetzen des Passworts wurde verschickt!");
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+// Logout
+async function logout() {
+  await auth.signOut();
+  window.location.href = "index.html";
+}
+
 </script>
 </body>
 </html>
