@@ -77,6 +77,7 @@ const resendLink = document.getElementById('resendLink');
 
 let isSignupMode = false;
 
+// Toggle Login / Signup
 function toggleMode() {
   isSignupMode = !isSignupMode;
   if (isSignupMode) {
@@ -98,7 +99,7 @@ function toggleMode() {
   resendLink.classList.add('hidden');
 }
 
-// === NEU: E-Mail-Verifikationslink auswerten ===
+// === E-Mail-Verifikationslink auswerten ===
 async function handleVerificationFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get('mode');
@@ -106,7 +107,7 @@ async function handleVerificationFromURL() {
 
   if (mode === 'verifyEmail' && oobCode) {
     try {
-      await auth.applyActionCode(oobCode); // E-Mail bestätigen
+      await auth.applyActionCode(oobCode);
       msg.textContent = "✅ E-Mail erfolgreich verifiziert! Bitte einloggen...";
     } catch (err) {
       console.error(err);
@@ -135,8 +136,7 @@ auth.onAuthStateChanged(async (user) => {
 
 handleVerificationFromURL();
 
-// Rest: signup, signin, logout etc. bleibt unverändert
-// Signup + E-Mail-Verifikation
+// === Funktionen ===
 async function signup() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
@@ -151,7 +151,7 @@ async function signup() {
       createdAt: new Date()
     });
     await user.sendEmailVerification({
-      url: "https://DEINE-URL/index.html", // Link zu deiner index.html
+      url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
       handleCodeInApp: true
     });
     msg.textContent = `✅ Willkommen, ${username}! Bitte überprüfe deine E-Mail für die Verifikation.`;
@@ -161,7 +161,6 @@ async function signup() {
   }
 }
 
-// Login
 async function signin() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
@@ -182,13 +181,12 @@ async function signin() {
   }
 }
 
-// Passwort zurücksetzen
 async function resetPassword() {
   const email = document.getElementById('email').value;
   if (!email) return alert("Bitte gib deine E-Mail ein!");
   try {
     await auth.sendPasswordResetEmail(email, {
-      url: "https://DEINE-URL/index.html"
+      url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html"
     });
     alert("Eine E-Mail zum Zurücksetzen des Passworts wurde verschickt!");
   } catch (e) {
@@ -196,12 +194,41 @@ async function resetPassword() {
   }
 }
 
-// Logout
+// ✅ Neue Funktion für Verifikationsmail erneut senden
+async function resendVerification() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+
+  if (!email || !pw) {
+    msg.textContent = "Bitte gib zuerst deine E-Mail und dein Passwort ein.";
+    return;
+  }
+
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+
+    if (user.emailVerified) {
+      msg.textContent = "✅ Deine E-Mail ist bereits verifiziert!";
+      return;
+    }
+
+    await user.sendEmailVerification({
+      url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
+      handleCodeInApp: true
+    });
+
+    msg.textContent = "📧 Verifikationsmail wurde erneut gesendet!";
+    await auth.signOut();
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
+  }
+}
+
 async function logout() {
   await auth.signOut();
   window.location.href = "index.html";
 }
-
 </script>
 </body>
 </html>
