@@ -162,7 +162,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-// Signup mit E-Mail-Verifikation
+// Signup mit E-Mail-Verifikation (mit URL-Fix!)
 async function signup() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
@@ -176,7 +176,10 @@ async function signup() {
       username: username,
       createdAt: new Date()
     });
-    await user.sendEmailVerification();
+    await user.sendEmailVerification({
+      url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
+      handleCodeInApp: true
+    });
     msg.textContent = `✅ Willkommen, ${username}! Bitte überprüfe deine E-Mail für die Verifikation.`;
     resendLink.classList.remove('hidden');
   } catch (e) {
@@ -209,14 +212,16 @@ async function resetPassword() {
   const email = document.getElementById('email').value;
   if (!email) return alert("Bitte gib deine E-Mail ein!");
   try {
-    await auth.sendPasswordResetEmail(email);
+    await auth.sendPasswordResetEmail(email, {
+      url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html"
+    });
     alert("Eine E-Mail zum Zurücksetzen des Passworts wurde verschickt!");
   } catch (e) {
     alert(e.message);
   }
 }
 
-// Verifikationsmail erneut senden
+// Verifikationsmail erneut senden (auch mit URL)
 async function resendVerification() {
   const email = document.getElementById('email').value;
   const pw = document.getElementById('password').value;
@@ -231,7 +236,10 @@ async function resendVerification() {
       msg.textContent = "✅ Deine E-Mail ist bereits verifiziert!";
       return;
     }
-    await user.sendEmailVerification();
+    await user.sendEmailVerification({
+      url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
+      handleCodeInApp: true
+    });
     msg.textContent = "📧 Verifikationsmail wurde erneut gesendet!";
     await auth.signOut();
   } catch (e) {
