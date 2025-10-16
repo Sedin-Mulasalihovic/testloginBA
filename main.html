@@ -63,7 +63,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Deine Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
       authDomain: "bytealchemy-2ba0b.firebaseapp.com",
@@ -78,9 +77,20 @@
     // Prüfen, ob User eingeloggt ist
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
+        // Nicht eingeloggt → zurück zur Login-Seite
         window.location.href = "index.html";
       } else {
         try {
+          // Stelle sicher, dass die E-Mail verifiziert ist
+          await user.reload();
+          if (!user.emailVerified) {
+            // Falls nicht verifiziert → Logout + zurück zum Login
+            await auth.signOut();
+            window.location.href = "index.html";
+            return;
+          }
+
+          // Nutzername aus Firestore abrufen
           const doc = await db.collection("users").doc(user.uid).get();
           if (doc.exists) {
             const username = doc.data().username;
@@ -102,5 +112,3 @@
   </script>
 </body>
 </html>
-
-
