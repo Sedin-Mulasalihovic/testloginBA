@@ -74,34 +74,45 @@
 
     const usernameDisplay = document.getElementById('usernameDisplay');
 
-    // Prüfen, ob User eingeloggt ist
-    auth.onAuthStateChanged(async (user) => {
+    let currentUser = null;
+
+    async function checkUser() {
+      currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      await currentUser.reload();
+
+      if (!currentUser.emailVerified) {
+        // Nicht verifizierte E-Mail → Logout + zurück
+        await auth.signOut();
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+        const doc = await db.collection("users").doc(currentUser.uid).get();
+        if (doc.exists) {
+          const username = doc.data().username;
+          usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
+        } else {
+          usernameDisplay.textContent = `👋 Willkommen, ${currentUser.email}!`;
+        }
+      } catch (err) {
+        console.error(err);
+        usernameDisplay.textContent = "Fehler beim Laden des Benutzers.";
+      }
+    }
+
+    // Prüfe initial und alle 3 Sekunden live
+    auth.onAuthStateChanged((user) => {
       if (!user) {
-        // Nicht eingeloggt → zurück zur Login-Seite
         window.location.href = "index.html";
       } else {
-        try {
-          // Stelle sicher, dass die E-Mail verifiziert ist
-          await user.reload();
-          if (!user.emailVerified) {
-            // Falls nicht verifiziert → Logout + zurück zum Login
-            await auth.signOut();
-            window.location.href = "index.html";
-            return;
-          }
-
-          // Nutzername aus Firestore abrufen
-          const doc = await db.collection("users").doc(user.uid).get();
-          if (doc.exists) {
-            const username = doc.data().username;
-            usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
-          } else {
-            usernameDisplay.textContent = `👋 Willkommen, ${user.email}!`;
-          }
-        } catch (err) {
-          console.error(err);
-          usernameDisplay.textContent = "Fehler beim Laden des Benutzers.";
-        }
+        checkUser();
+        setInterval(checkUser, 3000);
       }
     });
 
