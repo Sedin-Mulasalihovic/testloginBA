@@ -77,6 +77,8 @@ button:hover{
   <div class="toggle-link" onclick="toggleMode()" id="toggleLink">Noch kein Account? Jetzt registrieren</div>
   <div class="toggle-link" onclick="resetPassword()">Passwort vergessen?</div>
 
+  <div class="toggle-link hidden" id="resendLink" onclick="resendVerification()">Verifikationsmail erneut senden</div>
+
   <div class="message" id="message"></div>
 </div>
 
@@ -115,6 +117,7 @@ const formTitle = document.getElementById('formTitle');
 const formLead = document.getElementById('formLead');
 const submitBtn = document.getElementById('submitBtn');
 const toggleLink = document.getElementById('toggleLink');
+const resendLink = document.getElementById('resendLink');
 
 let isSignupMode = false;
 
@@ -136,13 +139,15 @@ function toggleMode() {
     toggleLink.textContent = "Noch kein Account? Jetzt registrieren";
   }
   msg.textContent = "";
+  resendLink.classList.add('hidden');
 }
 
 // Prüfen, ob eingeloggter User existiert und E-Mail verifiziert ist
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     if (!user.emailVerified) {
-      msg.textContent = "Bitte bestätige zuerst deine E-Mail-Adresse!";
+      msg.textContent = "⚠️ Bitte bestätige zuerst deine E-Mail-Adresse!";
+      resendLink.classList.remove('hidden');
       await auth.signOut();
       return;
     }
@@ -173,6 +178,7 @@ async function signup() {
     });
     await user.sendEmailVerification();
     msg.textContent = `✅ Willkommen, ${username}! Bitte überprüfe deine E-Mail für die Verifikation.`;
+    resendLink.classList.remove('hidden');
   } catch (e) {
     msg.textContent = '❌ ' + e.message;
   }
@@ -186,7 +192,8 @@ async function signin() {
     const userCredential = await auth.signInWithEmailAndPassword(email, pw);
     const user = userCredential.user;
     if (!user.emailVerified) {
-      msg.textContent = "Bitte bestätige zuerst deine E-Mail-Adresse!";
+      msg.textContent = "⚠️ Bitte bestätige zuerst deine E-Mail-Adresse!";
+      resendLink.classList.remove('hidden');
       await auth.signOut();
       return;
     }
@@ -206,6 +213,29 @@ async function resetPassword() {
     alert("Eine E-Mail zum Zurücksetzen des Passworts wurde verschickt!");
   } catch (e) {
     alert(e.message);
+  }
+}
+
+// Verifikationsmail erneut senden
+async function resendVerification() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  if (!email || !pw) {
+    msg.textContent = "Bitte gib zuerst deine E-Mail und dein Passwort ein.";
+    return;
+  }
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, pw);
+    const user = userCredential.user;
+    if (user.emailVerified) {
+      msg.textContent = "✅ Deine E-Mail ist bereits verifiziert!";
+      return;
+    }
+    await user.sendEmailVerification();
+    msg.textContent = "📧 Verifikationsmail wurde erneut gesendet!";
+    await auth.signOut();
+  } catch (e) {
+    msg.textContent = '❌ ' + e.message;
   }
 }
 
