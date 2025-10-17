@@ -1,125 +1,280 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ByteAlchemy</title>
-  <style>
-    :root {
-      --bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;
-      --accent-dark:#34d399;--muted:#9aa4b2;
-    }
-    body {
-      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background:linear-gradient(180deg,#071025 0%,#0b1220 100%);
-      color:#e6eef6;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      height:100vh;
-      text-align:center;
-      opacity:0;
-      animation:fadeIn 1s ease forwards;
-    }
-    @keyframes fadeIn {
-      from {opacity:0; transform:translateY(10px);}
-      to {opacity:1; transform:translateY(0);}
-    }
-    .logo {
-      width:70px;height:70px;border-radius:16px;
-      background:linear-gradient(135deg,var(--accent),#60a5fa);
-      display:flex;align-items:center;justify-content:center;
-      font-weight:700;color:#042029;font-size:22px;margin-bottom:16px;
-    }
-    button {
-      margin-top:20px;
-      background:linear-gradient(90deg,var(--accent),#60a5fa);
-      color:#042029;border:none;
-      padding:10px 20px;border-radius:8px;
-      cursor:pointer;font-weight:600;
-      transition:0.3s;
-    }
-    button:hover {
-      background:linear-gradient(90deg,var(--accent-dark),#3b82f6);
-    }
-    .username {
-      font-size:20px;
-      font-weight:600;
-      margin-top:8px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="logo">BA</div>
-  <h1>Willkommen bei ByteAlchemy</h1>
-  <p class="username" id="usernameDisplay">Lade Benutzerinformationen...</p>
-  <button onclick="logout()">Logout</button>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
-      authDomain: "bytealchemy-2ba0b.firebaseapp.com",
-      projectId: "bytealchemy-2ba0b",
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    const usernameDisplay = document.getElementById('usernameDisplay');
-
-    let currentUser = null;
-
-    async function checkUser() {
-      currentUser = auth.currentUser;
-      if (!currentUser) {
-        window.location.href = "index.html";
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ByteAlchemy — Hauptseite</title>
+    <style>
+      :root {
+        --bg: #0f1724;
+        --card: #0b1220;
+        --accent: #6ee7b7;
+        --accent-dark: #34d399;
+        --muted: #9aa4b2;
       }
+      body {
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        background: linear-gradient(180deg, #071025 0%, #0b1220 100%);
+        color: #e6eef6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        text-align: center;
+        opacity: 0;
+        animation: fadeIn 1s ease forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent), #60a5fa);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #042029;
+        font-size: 22px;
+        margin-bottom: 16px;
+      }
+      button {
+        margin-top: 10px;
+        background: linear-gradient(90deg, var(--accent), #60a5fa);
+        color: #042029;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      button:hover {
+        background: linear-gradient(90deg, var(--accent-dark), #3b82f6);
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 20px;
+        margin: 20px 0;
+        width: 100%;
+        max-width: 600px;
+        text-align: left;
+      }
+      h2 {
+        color: var(--accent);
+        margin-bottom: 10px;
+      }
+      .chat-box {
+        height: 250px;
+        overflow-y: auto;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        margin-bottom: 10px;
+      }
+      .message {
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+      .message .user {
+        color: var(--accent);
+        font-weight: bold;
+      }
+      input[type="text"] {
+        width: 75%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: transparent;
+        color: #fff;
+        margin-right: 5px;
+      }
+      .quest {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">BA</div>
+    <h1>Willkommen bei ByteAlchemy</h1>
+    <p id="usernameDisplay">Lade Benutzerinformationen...</p>
+    <button onclick="logout()">Logout</button>
 
-      await currentUser.reload();
+    <!-- CHAT -->
+    <div class="card">
+      <h2>💬 Globaler Chat</h2>
+      <div id="chatBox" class="chat-box"></div>
+      <input id="chatInput" type="text" placeholder="Nachricht eingeben..." />
+      <button onclick="sendMessage()">Senden</button>
+    </div>
 
-      if (!currentUser.emailVerified) {
-        // Nicht verifizierte E-Mail → Logout + zurück
+    <!-- QUESTS -->
+    <div class="card">
+      <h2>🧩 Quests</h2>
+      <div id="questsList">Lade Quests...</div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      // === Firebase Setup ===
+      const firebaseConfig = {
+        apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
+        authDomain: "bytealchemy-2ba0b.firebaseapp.com",
+        projectId: "bytealchemy-2ba0b",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const usernameDisplay = document.getElementById("usernameDisplay");
+      const chatBox = document.getElementById("chatBox");
+      const chatInput = document.getElementById("chatInput");
+
+      // Nachricht auch mit Enter senden
+      chatInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // === User-Check ===
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+        await user.reload();
+        if (!user.emailVerified) {
+          await auth.signOut();
+          window.location.href = "index.html";
+          return;
+        }
+        const doc = await db.collection("users").doc(user.uid).get();
+        const username = doc.exists ? doc.data().username : user.email;
+        usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
+
+        // Lade Chat & Quests
+        loadChat();
+        loadQuests();
+      });
+
+      async function logout() {
         await auth.signOut();
         window.location.href = "index.html";
-        return;
       }
 
-      try {
-        const doc = await db.collection("users").doc(currentUser.uid).get();
-        if (doc.exists) {
-          const username = doc.data().username;
-          usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
-        } else {
-          usernameDisplay.textContent = `👋 Willkommen, ${currentUser.email}!`;
+      // === CHAT SYSTEM ===
+      async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        const username = userDoc.exists ? userDoc.data().username : user.email;
+
+        await db.collection("messages").add({
+          user: username,
+          text: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        chatInput.value = "";
+      }
+
+      function loadChat() {
+        db.collection("messages")
+          .orderBy("createdAt", "asc")
+          .onSnapshot((snapshot) => {
+            chatBox.innerHTML = "";
+            snapshot.forEach((doc) => {
+              const msg = doc.data();
+              const div = document.createElement("div");
+              div.classList.add("message");
+              const time = msg.createdAt
+                ? msg.createdAt.toDate().toLocaleTimeString("de-DE", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "";
+              div.innerHTML = `<span class="user">${msg.user}</span>: ${msg.text} <span style="color:var(--muted);font-size:12px;">${time}</span>`;
+              chatBox.appendChild(div);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+          });
+      }
+
+      // === QUEST SYSTEM ===
+      async function loadQuests() {
+        const container = document.getElementById("questsList");
+        const snapshot = await db.collection("quests").get();
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.textContent =
+            "Noch keine Quests vorhanden – füge welche in Firestore hinzu!";
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        usernameDisplay.textContent = "Fehler beim Laden des Benutzers.";
-      }
-    }
 
-    // Prüfe initial und alle 3 Sekunden live
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        window.location.href = "index.html";
-      } else {
-        checkUser();
-        setInterval(checkUser, 3000);
+        snapshot.forEach((doc) => {
+          const q = doc.data();
+          // Sicherstellen, dass answers existieren
+          if (!q.answers || !Array.isArray(q.answers)) q.answers = [];
+          const div = document.createElement("div");
+          div.classList.add("quest");
+          div.innerHTML = `
+            <strong>${q.title}</strong> (${q.category})<br>
+            <p>${q.question}</p>
+            ${q.answers
+              .map(
+                (a, i) =>
+                  `<button onclick="checkAnswer('${doc.id}', ${i}, ${q.correctIndex}, ${q.xp})">${a}</button>`
+              )
+              .join(" ")}
+          `;
+          container.appendChild(div);
+        });
       }
-    });
 
-    async function logout() {
-      await auth.signOut();
-      window.location.href = "index.html";
-    }
-  </script>
-</body>
+      async function checkAnswer(questId, chosen, correct, xp) {
+        if (chosen === correct) {
+          alert("✅ Richtig! +" + xp + " XP");
+          const user = auth.currentUser;
+          await db
+            .collection("users")
+            .doc(user.uid)
+            .collection("progress")
+            .doc(questId)
+            .set({
+              done: true,
+              xp: xp,
+              completedAt: new Date(),
+            });
+        } else {
+          alert("❌ Falsch, versuch’s nochmal!");
+        }
+      }
+    </script>
+  </body>
 </html>
