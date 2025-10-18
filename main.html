@@ -2,7 +2,7 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ByteAlchemy — Hauptseite</title>
     <style>
       :root {
@@ -12,32 +12,75 @@
         --accent-dark: #34d399;
         --muted: #9aa4b2;
       }
+
+      /* Body */
       body {
-        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
           "Helvetica Neue", Arial;
         background: linear-gradient(180deg, #071025 0%, #0b1220 100%);
         color: #e6eef6;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Navbar */
+      nav.navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background: rgba(11, 18, 32, 0.85);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+      nav.navbar.small {
+        padding: 5px 20px;
+        background: rgba(11, 18, 32, 0.95);
+      }
+      nav .nav-logo {
+        font-weight: bold;
+        color: var(--accent);
+        font-size: 1.3rem;
+      }
+      nav .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+        padding: 0;
+      }
+      nav .nav-links a {
+        color: #e6eef6;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+      }
+      nav .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      /* Sections */
+      section {
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 40px 20px;
+        justify-content: center;
+        padding: 80px 20px 40px 20px;
         text-align: center;
-        opacity: 0;
-        animation: fadeIn 1s ease forwards;
+        transition: all 0.3s ease;
       }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+
+      /* Hero */
       .logo {
-        width: 70px;
-        height: 70px;
+        width: 100px;
+        height: 100px;
         border-radius: 16px;
         background: linear-gradient(135deg, var(--accent), #60a5fa);
         display: flex;
@@ -45,23 +88,60 @@
         justify-content: center;
         font-weight: 700;
         color: #042029;
-        font-size: 22px;
+        font-size: 32px;
         margin-bottom: 16px;
+        box-shadow: 0 0 20px rgba(110, 231, 183, 0.4);
+        animation: logoGlow 3s ease-in-out infinite alternate;
       }
-      button {
-        margin-top: 10px;
-        background: linear-gradient(90deg, var(--accent), #60a5fa);
-        color: #042029;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: 0.3s;
+      @keyframes logoGlow {
+        from {
+          box-shadow: 0 0 10px rgba(110, 231, 183, 0.4);
+        }
+        to {
+          box-shadow: 0 0 35px rgba(110, 231, 183, 0.8);
+        }
       }
-      button:hover {
-        background: linear-gradient(90deg, var(--accent-dark), #3b82f6);
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: var(--accent);
       }
+      #usernameDisplay {
+        font-size: 1.5rem;
+        color: var(--accent);
+        margin-bottom: 20px;
+        white-space: nowrap;
+        display: inline-block;
+        overflow: hidden;
+        text-shadow: 0 0 8px rgba(110, 231, 183, 0.7);
+        animation: typingLoop 5s steps(30, end) infinite,
+          glowPulse 4s ease-in-out infinite;
+      }
+      @keyframes typingLoop {
+        0% {
+          width: 0;
+        }
+        40% {
+          width: 100%;
+        }
+        60% {
+          width: 100%;
+        }
+        100% {
+          width: 0;
+        }
+      }
+      @keyframes glowPulse {
+        0%,
+        100% {
+          text-shadow: 0 0 6px rgba(110, 231, 183, 0.5);
+        }
+        50% {
+          text-shadow: 0 0 15px rgba(110, 231, 183, 0.9);
+        }
+      }
+
+      /* Cards */
       .card {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -71,6 +151,7 @@
         width: 100%;
         max-width: 600px;
         text-align: left;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
       }
       h2 {
         color: var(--accent);
@@ -102,39 +183,121 @@
         color: #fff;
         margin-right: 5px;
       }
-      .quest {
-        margin-bottom: 15px;
-        padding: 10px;
-        border-radius: 10px;
+      button {
+        margin-top: 10px;
+        background: linear-gradient(90deg, var(--accent), #60a5fa);
+        color: #042029;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(90deg, var(--accent-dark), #3b82f6);
+      }
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      #chatResetInfo {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 5px;
+        text-align: right;
+      }
+      #leaderboardList div {
         background: rgba(255, 255, 255, 0.02);
+        margin: 5px 0;
+        padding: 8px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        nav .nav-links {
+          gap: 10px;
+        }
+        #usernameDisplay {
+          font-size: 1.2rem;
+        }
+        h1 {
+          font-size: 1.5rem;
+        }
+        .logo {
+          width: 80px;
+          height: 80px;
+          font-size: 24px;
+        }
+        section {
+          padding: 100px 15px 40px 15px;
+        }
+        input[type="text"] {
+          width: 65%;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="logo">BA</div>
-    <h1>Willkommen bei ByteAlchemy</h1>
-    <p id="usernameDisplay">Lade Benutzerinformationen...</p>
-    <button onclick="logout()">Logout</button>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-logo">BA</div>
+      <ul class="nav-links">
+        <li><a href="#chat">💬 Chat</a></li>
+        <li><a href="#quests">🧩 Quests</a></li>
+        <li><a href="#leaderboard">🏆 Leaderboard</a></li>
+      </ul>
+    </nav>
 
-    <!-- CHAT -->
-    <div class="card">
-      <h2>💬 Globaler Chat</h2>
-      <div id="chatBox" class="chat-box"></div>
-      <input id="chatInput" type="text" placeholder="Nachricht eingeben..." />
-      <button onclick="sendMessage()">Senden</button>
-    </div>
+    <!-- Hero Section -->
+    <section id="hero">
+      <div class="logo">BA</div>
+      <h1>Willkommen bei ByteAlchemy</h1>
+      <p id="usernameDisplay">Lade Benutzerinformationen...</p>
+      <button onclick="logout()">Logout</button>
+    </section>
 
-    <!-- QUESTS -->
-    <div class="card">
-      <h2>🧩 Quests</h2>
-      <div id="questsList">Lade Quests...</div>
-    </div>
+    <!-- Chat Section -->
+    <section id="chat" class="fade-in">
+      <div class="card">
+        <h2>💬 Globaler Chat</h2>
+        <div id="chatBox" class="chat-box"></div>
+        <input id="chatInput" type="text" placeholder="Nachricht eingeben..." />
+        <button onclick="sendMessage()">Senden</button>
+        <div id="chatResetInfo">Letzter Reset: wird geladen...</div>
+      </div>
+    </section>
+
+    <!-- Quests Section -->
+    <section id="quests" class="fade-in">
+      <div class="card">
+        <h2>🧩 Quests</h2>
+        <div id="questsList">Lade Quests...</div>
+      </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="fade-in">
+      <div class="card">
+        <h2>🏆 Leaderboard</h2>
+        <div id="leaderboardList">Lade Leaderboard...</div>
+      </div>
+    </section>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
     <script>
       // === Firebase Setup ===
       const firebaseConfig = {
@@ -149,16 +312,18 @@
       const usernameDisplay = document.getElementById("usernameDisplay");
       const chatBox = document.getElementById("chatBox");
       const chatInput = document.getElementById("chatInput");
+      const chatResetInfo = document.getElementById("chatResetInfo");
+      const leaderboardList = document.getElementById("leaderboardList");
 
-      // Nachricht auch mit Enter senden
-      chatInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          event.preventDefault();
+      // Nachricht mit Enter senden
+      chatInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
           sendMessage();
         }
       });
 
-      // === User-Check ===
+      // === User-Check & Load ===
       auth.onAuthStateChanged(async (user) => {
         if (!user) {
           window.location.href = "index.html";
@@ -170,13 +335,36 @@
           window.location.href = "index.html";
           return;
         }
-        const doc = await db.collection("users").doc(user.uid).get();
-        const username = doc.exists ? doc.data().username : user.email;
+
+        const userRef = db.collection("users").doc(user.uid);
+        const doc = await userRef.get();
+
+        // Initialisiere totalXP und level
+        if (!doc.exists) {
+          await userRef.set({
+            username: user.displayName || user.email.split("@")[0],
+            email: user.email,
+            totalXP: 0,
+            level: 0,
+          });
+        } else {
+          const data = doc.data();
+          if (data.totalXP === undefined || data.level === undefined) {
+            await userRef.update({
+              totalXP: data.totalXP || 0,
+              level: data.level || 0,
+            });
+          }
+        }
+
+        const username = (await userRef.get()).data().username;
         usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
 
-        // Lade Chat & Quests
         loadChat();
         loadQuests();
+        loadLeaderboard();
+        cleanupOldMessages();
+        setInterval(cleanupOldMessages, 3600000); // jede Stunde
       });
 
       async function logout() {
@@ -184,7 +372,23 @@
         window.location.href = "index.html";
       }
 
-      // === CHAT SYSTEM ===
+      // === XP-Funktion ===
+      async function addXP(userId, xpToAdd) {
+        const userRef = db.collection("users").doc(userId);
+        await db.runTransaction(async (transaction) => {
+          const doc = await transaction.get(userRef);
+          if (!doc.exists) return;
+
+          let totalXP = doc.data().totalXP || 0;
+          totalXP += xpToAdd;
+          const level = Math.floor(totalXP / 100);
+
+          transaction.update(userRef, { totalXP, level });
+        });
+        loadLeaderboard();
+      }
+
+      // === Chat System ===
       async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
@@ -199,8 +403,10 @@
           text: text,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
-
         chatInput.value = "";
+
+        // XP pro Nachricht
+        await addXP(user.uid, 5);
       }
 
       function loadChat() {
@@ -225,12 +431,27 @@
           });
       }
 
-      // === QUEST SYSTEM ===
+      async function cleanupOldMessages() {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const oldMessages = await db
+          .collection("messages")
+          .where("createdAt", "<", oneHourAgo)
+          .get();
+        oldMessages.forEach(async (doc) => {
+          await db.collection("messages").doc(doc.id).delete();
+        });
+        const now = new Date().toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        chatResetInfo.textContent = `Letzter Reset: ${now}`;
+      }
+
+      // === Quests System ===
       async function loadQuests() {
         const container = document.getElementById("questsList");
         const snapshot = await db.collection("quests").get();
         container.innerHTML = "";
-
         if (snapshot.empty) {
           container.textContent =
             "Noch keine Quests vorhanden – füge welche in Firestore hinzu!";
@@ -239,20 +460,19 @@
 
         snapshot.forEach((doc) => {
           const q = doc.data();
-          // Sicherstellen, dass answers existieren
           if (!q.answers || !Array.isArray(q.answers)) q.answers = [];
           const div = document.createElement("div");
           div.classList.add("quest");
           div.innerHTML = `
-            <strong>${q.title}</strong> (${q.category})<br>
-            <p>${q.question}</p>
-            ${q.answers
-              .map(
-                (a, i) =>
-                  `<button onclick="checkAnswer('${doc.id}', ${i}, ${q.correctIndex}, ${q.xp})">${a}</button>`
-              )
-              .join(" ")}
-          `;
+      <strong>${q.title}</strong> (${q.category})<br>
+      <p>${q.question}</p>
+      ${q.answers
+        .map(
+          (a, i) =>
+            `<button onclick="checkAnswer('${doc.id}',${i},${q.correctIndex},${q.xp})">${a}</button>`
+        )
+        .join(" ")}
+    `;
           container.appendChild(div);
         });
       }
@@ -271,10 +491,72 @@
               xp: xp,
               completedAt: new Date(),
             });
+
+          await addXP(user.uid, xp);
         } else {
           alert("❌ Falsch, versuch’s nochmal!");
         }
       }
+
+      // === Leaderboard ===
+      async function loadLeaderboard() {
+        leaderboardList.innerHTML = "Lade...";
+        const snapshot = await db
+          .collection("users")
+          .orderBy("totalXP", "desc")
+          .get();
+
+        leaderboardList.innerHTML = "";
+        let rank = 1;
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const div = document.createElement("div");
+
+          // Balken für Fortschritt zum nächsten Level
+          const barContainer = document.createElement("div");
+          barContainer.style.flex = "1";
+          barContainer.style.height = "10px";
+          barContainer.style.margin = "0 10px";
+          barContainer.style.background = "rgba(255,255,255,0.1)";
+          barContainer.style.borderRadius = "5px";
+
+          const bar = document.createElement("div");
+          bar.style.height = "100%";
+          bar.style.width = `${data.totalXP % 100}%`;
+          bar.style.background =
+            "linear-gradient(90deg,var(--accent),var(--accent-dark))";
+          bar.style.borderRadius = "5px";
+
+          barContainer.appendChild(bar);
+
+          div.textContent = `${rank}. ${data.username} — XP: ${data.totalXP}, Level: ${data.level}`;
+          div.appendChild(barContainer);
+          leaderboardList.appendChild(div);
+          rank++;
+        });
+      }
+
+      // Scroll: Navbar klein wenn scroll > 80
+      window.addEventListener("scroll", () => {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 80) {
+          navbar.classList.add("small");
+        } else {
+          navbar.classList.remove("small");
+        }
+      });
+
+      // Fade-in Animation Observer
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      });
+      document
+        .querySelectorAll(".fade-in")
+        .forEach((el) => observer.observe(el));
     </script>
   </body>
 </html>
