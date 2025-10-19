@@ -1,256 +1,322 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <!-- Prevent mobile zoom when focusing inputs (user asked for no zoom) -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
     <title>ByteAlchemy — Hauptseite</title>
     <style>
       :root {
-        --bg: #0f1724;
-        --card: #0b1220;
-        --accent: #6ee7b7;
+        --bg: #050912;
+        --card: rgba(255, 255, 255, 0.04);
+        --glass: rgba(255, 255, 255, 0.06);
+        --accent: #22d3ee;
         --accent-dark: #34d399;
+        --accent-alt: #8b5cf6;
+        --text: #e6eef6;
         --muted: #9aa4b2;
+        --navbar-height: 72px;
       }
 
-      /* Body */
+      /* global */
+      html,
       body {
-        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial;
-        background: linear-gradient(180deg, #071025 0%, #0b1220 100%);
-        color: #e6eef6;
+        height: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
         margin: 0;
-        padding: 0;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        background: radial-gradient(
+          circle at 10% 10%,
+          #071025 0%,
+          #050912 50%,
+          #030612 100%
+        );
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        scroll-behavior: smooth;
       }
 
-      /* Navbar */
+      /* NAV */
       nav.navbar {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
+        right: 0;
+        height: var(--navbar-height);
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 10px 20px;
-        background: rgba(11, 18, 32, 0.85);
-        backdrop-filter: blur(6px);
+        justify-content: space-between;
+        padding: 0 28px;
+        background: linear-gradient(
+          180deg,
+          rgba(6, 10, 18, 0.6),
+          rgba(6, 10, 18, 0.45)
+        );
+        backdrop-filter: blur(8px) saturate(1.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         z-index: 1000;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        transition: all 0.3s ease;
+        transition: height 0.22s ease, padding 0.22s ease, background 0.22s ease;
       }
       nav.navbar.small {
-        padding: 5px 20px;
-        background: rgba(11, 18, 32, 0.95);
+        height: 56px;
+        padding: 0 18px;
+        background: linear-gradient(
+          180deg,
+          rgba(6, 10, 18, 0.9),
+          rgba(6, 10, 18, 0.85)
+        );
       }
-      nav .nav-logo {
-        font-weight: bold;
+      .nav-logo {
         color: var(--accent);
-        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        font-size: 1.4rem;
       }
-      nav .nav-links {
+      .nav-links {
         list-style: none;
-        display: flex;
-        gap: 15px;
         margin: 0;
         padding: 0;
+        display: flex;
+        gap: 20px;
+        align-items: center;
       }
-      nav .nav-links a {
-        color: #e6eef6;
+      .nav-links a {
+        color: var(--text);
         text-decoration: none;
-        font-size: 0.9rem;
-        transition: 0.3s;
+        font-weight: 600;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
       }
-      nav .nav-links a:hover {
+      .nav-links a:hover {
         color: var(--accent);
       }
 
-      /* Sections */
+      /* sections safe area so navbar does not overlap */
       section {
-        min-height: 100vh;
+        padding-top: calc(var(--navbar-height) + 36px);
+        padding-bottom: 60px;
+        min-height: calc(100vh - var(--navbar-height));
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 80px 20px 40px 20px;
         text-align: center;
-        transition: all 0.3s ease;
+      }
+      /* ensure anchor jumps show content below navbar */
+      section[id] {
+        scroll-margin-top: calc(var(--navbar-height) + 12px);
       }
 
-      /* Hero */
+      /* HERO */
       .logo {
-        width: 100px;
-        height: 100px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, var(--accent), #60a5fa);
+        width: 110px;
+        height: 110px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-alt));
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
-        color: #042029;
-        font-size: 32px;
-        margin-bottom: 16px;
-        box-shadow: 0 0 20px rgba(110, 231, 183, 0.4);
+        font-weight: 800;
+        color: #041015;
+        font-size: 34px;
+        margin-bottom: 18px;
+        box-shadow: 0 6px 30px rgba(139, 92, 246, 0.35);
         animation: logoGlow 3s ease-in-out infinite alternate;
       }
       @keyframes logoGlow {
         from {
-          box-shadow: 0 0 10px rgba(110, 231, 183, 0.4);
+          box-shadow: 0 6px 18px rgba(139, 92, 246, 0.25);
         }
         to {
-          box-shadow: 0 0 35px rgba(110, 231, 183, 0.8);
+          box-shadow: 0 10px 40px rgba(139, 92, 246, 0.9);
         }
       }
       h1 {
-        font-size: 2rem;
-        margin-bottom: 10px;
+        font-size: 2.2rem;
+        margin: 8px 0 6px 0;
         color: var(--accent);
       }
       #usernameDisplay {
-        font-size: 1.5rem;
-        color: var(--accent);
-        margin-bottom: 20px;
-        white-space: nowrap;
-        display: inline-block;
-        overflow: hidden;
-        text-shadow: 0 0 8px rgba(110, 231, 183, 0.7);
-        animation: typingLoop 5s steps(30, end) infinite,
-          glowPulse 4s ease-in-out infinite;
-      }
-      @keyframes typingLoop {
-        0% {
-          width: 0;
-        }
-        40% {
-          width: 100%;
-        }
-        60% {
-          width: 100%;
-        }
-        100% {
-          width: 0;
-        }
-      }
-      @keyframes glowPulse {
-        0%,
-        100% {
-          text-shadow: 0 0 6px rgba(110, 231, 183, 0.5);
-        }
-        50% {
-          text-shadow: 0 0 15px rgba(110, 231, 183, 0.9);
-        }
+        font-size: 1.2rem;
+        color: var(--accent-alt);
+        margin-bottom: 18px;
+        text-shadow: 0 0 10px rgba(139, 92, 246, 0.35);
       }
 
-      /* Cards */
+      /* card / glass */
       .card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 14px;
-        padding: 20px;
-        margin: 20px 0;
         width: 100%;
-        max-width: 600px;
+        max-width: 760px;
+        background: var(--glass);
+        border-radius: 16px;
+        padding: 22px;
+        margin: 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(6px) saturate(1.05);
         text-align: left;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
       }
       h2 {
         color: var(--accent);
-        margin-bottom: 10px;
+        margin: 0 0 12px 0;
       }
+
+      /* chat */
       .chat-box {
-        height: 250px;
-        overflow-y: auto;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 10px;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.02);
-        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        padding: 12px;
+        max-height: 38vh;
+        min-height: 180px;
+        overflow: auto;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        margin-bottom: 12px;
       }
       .message {
-        margin-bottom: 6px;
-        font-size: 14px;
+        margin-bottom: 8px;
+        font-size: 15px;
       }
       .message .user {
         color: var(--accent);
-        font-weight: bold;
+        font-weight: 700;
+        margin-right: 6px;
       }
-      input[type="text"] {
-        width: 75%;
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: transparent;
-        color: #fff;
-        margin-right: 5px;
+
+      /* input/button */
+      input[type="text"],
+      textarea {
+        width: 100%;
+        max-width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.25);
+        color: var(--text);
+        font-size: 16px; /* prevents iOS zoom-on-focus */
+        outline: none;
+        box-sizing: border-box;
       }
-      button {
-        margin-top: 10px;
-        background: linear-gradient(90deg, var(--accent), #60a5fa);
-        color: #042029;
+      input[type="text"]:focus,
+      textarea:focus {
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
+        border-color: var(--accent);
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .controls .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
         border: none;
-        padding: 8px 16px;
-        border-radius: 8px;
         cursor: pointer;
-        font-weight: 600;
-        transition: 0.3s;
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+        color: #041015;
+        transition: transform 0.15s ease;
       }
-      button:hover {
-        transform: scale(1.05);
-        background: linear-gradient(90deg, var(--accent-dark), #3b82f6);
+      .controls .btn:hover {
+        transform: translateY(-3px);
       }
+
+      /* leaderboard */
+      #leaderboardList div {
+        background: rgba(255, 255, 255, 0.035);
+        padding: 10px 12px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .bar-container {
+        width: 100%;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .bar {
+        height: 100%;
+        width: 0%;
+        border-radius: 8px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+        transition: width 1s cubic-bezier(0.2, 0.9, 0.3, 1);
+      }
+
+      /* small screens */
+      @media (max-width: 900px) {
+        :root {
+          --navbar-height: 64px;
+        }
+        nav.navbar {
+          padding: 0 18px;
+        }
+        .logo {
+          width: 88px;
+          height: 88px;
+          font-size: 28px;
+          border-radius: 16px;
+        }
+        h1 {
+          font-size: 1.6rem;
+        }
+        section {
+          padding-top: calc(var(--navbar-height) + 20px);
+        }
+        .card {
+          margin: 12px;
+          padding: 16px;
+        }
+      }
+      @media (max-width: 480px) {
+        :root {
+          --navbar-height: 56px;
+        }
+        .nav-links {
+          display: none;
+        } /* compact */
+        .logo {
+          width: 78px;
+          height: 78px;
+          font-size: 22px;
+        }
+        .controls {
+          flex-direction: column;
+        }
+        .chat-box {
+          max-height: 40vh;
+        }
+      }
+
+      /* fade-in animations */
       .fade-in {
         opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.8s ease, transform 0.8s ease;
+        transform: translateY(14px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
       }
       .fade-in.visible {
         opacity: 1;
-        transform: translateY(0);
-      }
-      #chatResetInfo {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 5px;
-        text-align: right;
-      }
-      #leaderboardList div {
-        background: rgba(255, 255, 255, 0.02);
-        margin: 5px 0;
-        padding: 8px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        nav .nav-links {
-          gap: 10px;
-        }
-        #usernameDisplay {
-          font-size: 1.2rem;
-        }
-        h1 {
-          font-size: 1.5rem;
-        }
-        .logo {
-          width: 80px;
-          height: 80px;
-          font-size: 24px;
-        }
-        section {
-          padding: 100px 15px 40px 15px;
-        }
-        input[type="text"] {
-          width: 65%;
-        }
+        transform: none;
       }
     </style>
   </head>
+
   <body>
-    <!-- Navbar -->
-    <nav class="navbar">
+    <!-- NAVBAR -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
       <div class="nav-logo">BA</div>
       <ul class="nav-links">
         <li><a href="#chat">💬 Chat</a></li>
@@ -259,26 +325,50 @@
       </ul>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="hero">
+    <!-- HERO -->
+    <section id="hero" class="fade-in">
       <div class="logo">BA</div>
       <h1>Willkommen bei ByteAlchemy</h1>
       <p id="usernameDisplay">Lade Benutzerinformationen...</p>
-      <button onclick="logout()">Logout</button>
-    </section>
-
-    <!-- Chat Section -->
-    <section id="chat" class="fade-in">
-      <div class="card">
-        <h2>💬 Globaler Chat</h2>
-        <div id="chatBox" class="chat-box"></div>
-        <input id="chatInput" type="text" placeholder="Nachricht eingeben..." />
-        <button onclick="sendMessage()">Senden</button>
-        <div id="chatResetInfo">Letzter Reset: wird geladen...</div>
+      <div style="margin-top: 12px">
+        <button
+          class="btn logout-btn controls"
+          style="max-width: 160px"
+          onclick="logout()"
+        >
+          Logout
+        </button>
       </div>
     </section>
 
-    <!-- Quests Section -->
+    <!-- CHAT -->
+    <section id="chat" class="fade-in">
+      <div class="card">
+        <h2>💬 Globaler Chat</h2>
+        <div id="chatBox" class="chat-box" aria-live="polite"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <input
+            id="chatInput"
+            type="text"
+            placeholder="Nachricht eingeben..."
+            autocomplete="off"
+          />
+          <div class="controls">
+            <button id="sendBtn" class="btn">Senden</button>
+            <div style="flex: 1"></div>
+            <div
+              id="chatResetInfo"
+              style="font-size: 13px; color: var(--muted)"
+            >
+              Letzter Reset: wird geladen...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUESTS -->
     <section id="quests" class="fade-in">
       <div class="card">
         <h2>🧩 Quests</h2>
@@ -286,7 +376,7 @@
       </div>
     </section>
 
-    <!-- Leaderboard Section -->
+    <!-- LEADERBOARD -->
     <section id="leaderboard" class="fade-in">
       <div class="card">
         <h2>🏆 Leaderboard</h2>
@@ -294,12 +384,13 @@
       </div>
     </section>
 
-    <!-- Firebase -->
+    <!-- Firebase libs (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <script>
-      // === Firebase Setup ===
+      // ==== Firebase Setup (deine Config - bereits aus deinem Code übernommen) ====
       const firebaseConfig = {
         apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
         authDomain: "bytealchemy-2ba0b.firebaseapp.com",
@@ -309,23 +400,39 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
+      // DOM
       const usernameDisplay = document.getElementById("usernameDisplay");
       const chatBox = document.getElementById("chatBox");
       const chatInput = document.getElementById("chatInput");
+      const sendBtn = document.getElementById("sendBtn");
       const chatResetInfo = document.getElementById("chatResetInfo");
       const leaderboardList = document.getElementById("leaderboardList");
+      const questsList = document.getElementById("questsList");
 
-      // Nachricht mit Enter senden
-      chatInput.addEventListener("keydown", function (e) {
+      // Prevent mobile auto-zoom on focus: font-size >= 16px already set on inputs above.
+      // Send with Enter
+      chatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           sendMessage();
         }
       });
+      sendBtn.addEventListener("click", sendMessage);
 
-      // === User-Check & Load ===
+      // Measure and set navbar height CSS variable so sections never hidden
+      function updateNavbarHeightVar() {
+        const nav = document.querySelector("nav.navbar");
+        if (!nav) return;
+        const h = nav.offsetHeight;
+        document.documentElement.style.setProperty("--navbar-height", h + "px");
+      }
+      window.addEventListener("load", updateNavbarHeightVar);
+      window.addEventListener("resize", updateNavbarHeightVar);
+
+      // Auth state
       auth.onAuthStateChanged(async (user) => {
         if (!user) {
+          // not logged in - redirect to login page
           window.location.href = "index.html";
           return;
         }
@@ -336,10 +443,9 @@
           return;
         }
 
+        // ensure user doc has totalXP + level
         const userRef = db.collection("users").doc(user.uid);
         const doc = await userRef.get();
-
-        // Initialisiere totalXP und level
         if (!doc.exists) {
           await userRef.set({
             username: user.displayName || user.email.split("@")[0],
@@ -372,74 +478,92 @@
         window.location.href = "index.html";
       }
 
-      // === XP-Funktion ===
+      // Add XP in transaction
       async function addXP(userId, xpToAdd) {
         const userRef = db.collection("users").doc(userId);
-        await db.runTransaction(async (transaction) => {
-          const doc = await transaction.get(userRef);
-          if (!doc.exists) return;
-
-          let totalXP = doc.data().totalXP || 0;
-          totalXP += xpToAdd;
+        await db.runTransaction(async (tx) => {
+          const d = await tx.get(userRef);
+          if (!d.exists) return;
+          let totalXP = (d.data().totalXP || 0) + xpToAdd;
           const level = Math.floor(totalXP / 100);
-
-          transaction.update(userRef, { totalXP, level });
+          tx.update(userRef, { totalXP, level });
         });
         loadLeaderboard();
       }
 
-      // === Chat System ===
+      // === Chat ===
       async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
         const user = auth.currentUser;
         if (!user) return;
-
-        const userDoc = await db.collection("users").doc(user.uid).get();
-        const username = userDoc.exists ? userDoc.data().username : user.email;
+        const udoc = await db.collection("users").doc(user.uid).get();
+        const uname = udoc.exists ? udoc.data().username : user.email;
 
         await db.collection("messages").add({
-          user: username,
+          user: uname,
           text: text,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         chatInput.value = "";
 
         // XP pro Nachricht
-        await addXP(user.uid, 5);
+        addXP(user.uid, 5);
       }
 
       function loadChat() {
         db.collection("messages")
           .orderBy("createdAt", "asc")
-          .onSnapshot((snapshot) => {
+          .onSnapshot((snap) => {
             chatBox.innerHTML = "";
-            snapshot.forEach((doc) => {
-              const msg = doc.data();
+            snap.forEach((d) => {
+              const m = d.data();
               const div = document.createElement("div");
               div.classList.add("message");
-              const time = msg.createdAt
-                ? msg.createdAt.toDate().toLocaleTimeString("de-DE", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
+              const time = m.createdAt
+                ? m.createdAt
+                    .toDate()
+                    .toLocaleTimeString("de-DE", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
                 : "";
-              div.innerHTML = `<span class="user">${msg.user}</span>: ${msg.text} <span style="color:var(--muted);font-size:12px;">${time}</span>`;
+              div.innerHTML = `<span class="user">${escapeHtml(
+                m.user
+              )}</span>: ${escapeHtml(
+                m.text
+              )} <span style="color:var(--muted);font-size:12px;">${time}</span>`;
               chatBox.appendChild(div);
             });
             chatBox.scrollTop = chatBox.scrollHeight;
           });
       }
 
+      // Prevent XSS in chat/quests
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // Cleanup messages older than 1h
       async function cleanupOldMessages() {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        const oldMessages = await db
-          .collection("messages")
-          .where("createdAt", "<", oneHourAgo)
-          .get();
-        oldMessages.forEach(async (doc) => {
-          await db.collection("messages").doc(doc.id).delete();
-        });
+        try {
+          const oneHourAgo = new Date(Date.now() - 3600000);
+          const old = await db
+            .collection("messages")
+            .where("createdAt", "<", oneHourAgo)
+            .get();
+          old.forEach(async (d) => {
+            await db.collection("messages").doc(d.id).delete();
+          });
+        } catch (e) {
+          console.warn("cleanup error", e);
+        }
         const now = new Date().toLocaleTimeString("de-DE", {
           hour: "2-digit",
           minute: "2-digit",
@@ -447,33 +571,42 @@
         chatResetInfo.textContent = `Letzter Reset: ${now}`;
       }
 
-      // === Quests System ===
+      // === Quests ===
       async function loadQuests() {
-        const container = document.getElementById("questsList");
-        const snapshot = await db.collection("quests").get();
-        container.innerHTML = "";
-        if (snapshot.empty) {
-          container.textContent =
+        const snap = await db.collection("quests").get();
+        questsList.innerHTML = "";
+        if (snap.empty) {
+          questsList.textContent =
             "Noch keine Quests vorhanden – füge welche in Firestore hinzu!";
           return;
         }
-
-        snapshot.forEach((doc) => {
-          const q = doc.data();
-          if (!q.answers || !Array.isArray(q.answers)) q.answers = [];
-          const div = document.createElement("div");
-          div.classList.add("quest");
-          div.innerHTML = `
-      <strong>${q.title}</strong> (${q.category})<br>
-      <p>${q.question}</p>
-      ${q.answers
-        .map(
-          (a, i) =>
-            `<button onclick="checkAnswer('${doc.id}',${i},${q.correctIndex},${q.xp})">${a}</button>`
-        )
-        .join(" ")}
-    `;
-          container.appendChild(div);
+        snap.forEach((d) => {
+          const q = d.data();
+          const wrapper = document.createElement("div");
+          wrapper.style.marginBottom = "12px";
+          wrapper.innerHTML = `
+            <strong>${escapeHtml(q.title || "Quest")}</strong> (${escapeHtml(
+            q.category || ""
+          )})<br>
+            <p style="margin:6px 0">${escapeHtml(q.question || "")}</p>
+          `;
+          const answersDiv = document.createElement("div");
+          answersDiv.style.display = "flex";
+          answersDiv.style.flexWrap = "wrap";
+          answersDiv.style.gap = "8px";
+          (q.answers || []).forEach((a, i) => {
+            const btn = document.createElement("button");
+            btn.className = "btn";
+            btn.style.padding = "8px 10px";
+            btn.style.fontWeight = "600";
+            btn.style.borderRadius = "8px";
+            btn.textContent = a;
+            btn.onclick = () =>
+              checkAnswer(d.id, i, q.correctIndex, q.xp || 10);
+            answersDiv.appendChild(btn);
+          });
+          wrapper.appendChild(answersDiv);
+          questsList.appendChild(wrapper);
         });
       }
 
@@ -491,72 +624,72 @@
               xp: xp,
               completedAt: new Date(),
             });
-
-          await addXP(user.uid, xp);
+          addXP(user.uid, xp);
         } else {
-          alert("❌ Falsch, versuch’s nochmal!");
+          alert("❌ Falsch, versuch's nochmal!");
         }
       }
 
       // === Leaderboard ===
       async function loadLeaderboard() {
         leaderboardList.innerHTML = "Lade...";
-        const snapshot = await db
+        const snap = await db
           .collection("users")
           .orderBy("totalXP", "desc")
           .get();
-
         leaderboardList.innerHTML = "";
         let rank = 1;
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const div = document.createElement("div");
+        snap.forEach((d) => {
+          const u = d.data();
+          const el = document.createElement("div");
+          const title = document.createElement("div");
+          title.innerHTML = `<strong>${rank}. ${escapeHtml(
+            u.username || d.id
+          )}</strong> — XP: ${u.totalXP || 0}, Level: ${u.level || 0}`;
+          el.appendChild(title);
 
-          // Balken für Fortschritt zum nächsten Level
           const barContainer = document.createElement("div");
-          barContainer.style.flex = "1";
-          barContainer.style.height = "10px";
-          barContainer.style.margin = "0 10px";
-          barContainer.style.background = "rgba(255,255,255,0.1)";
-          barContainer.style.borderRadius = "5px";
-
+          barContainer.className = "bar-container";
           const bar = document.createElement("div");
-          bar.style.height = "100%";
-          bar.style.width = `${data.totalXP % 100}%`;
-          bar.style.background =
-            "linear-gradient(90deg,var(--accent),var(--accent-dark))";
-          bar.style.borderRadius = "5px";
-
+          bar.className = "bar";
           barContainer.appendChild(bar);
+          el.appendChild(barContainer);
 
-          div.textContent = `${rank}. ${data.username} — XP: ${data.totalXP}, Level: ${data.level}`;
-          div.appendChild(barContainer);
-          leaderboardList.appendChild(div);
+          leaderboardList.appendChild(el);
+
+          // animate width on next frame
+          requestAnimationFrame(() => {
+            const progress = (u.totalXP || 0) % 100;
+            bar.style.width = progress + "%";
+          });
+
           rank++;
         });
       }
 
-      // Scroll: Navbar klein wenn scroll > 80
+      // small UI helpers
       window.addEventListener("scroll", () => {
         const navbar = document.querySelector(".navbar");
-        if (window.scrollY > 80) {
-          navbar.classList.add("small");
-        } else {
-          navbar.classList.remove("small");
-        }
+        if (window.scrollY > 80) navbar.classList.add("small");
+        else navbar.classList.remove("small");
+        updateNavbarHeightVar();
       });
 
-      // Fade-in Animation Observer
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      });
+      // intersection observer for fade-ins
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add("visible");
+          });
+        },
+        { threshold: 0.12 }
+      );
       document
         .querySelectorAll(".fade-in")
         .forEach((el) => observer.observe(el));
+
+      // initial navbar update (in case height changed)
+      updateNavbarHeightVar();
     </script>
   </body>
 </html>
