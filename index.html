@@ -182,7 +182,12 @@
         Noch kein Account? Jetzt registrieren
       </div>
       <div class="toggle-link" onclick="resetPassword()">
-        Passwort vergessen?
+        <a
+          href="reset.html"
+          style="color: var(--accent); text-decoration: none"
+        >
+          Passwort vergessen?
+        </a>
       </div>
       <div
         class="toggle-link hidden"
@@ -268,14 +273,11 @@
             pw
           );
           const user = userCredential.user;
-          await db
-            .collection("users")
-            .doc(user.uid)
-            .set({
-              email: user.email,
-              username: username,
-              createdAt: new Date(),
-            });
+          await db.collection("users").doc(user.uid).set({
+            email: user.email,
+            username: username,
+            createdAt: new Date(),
+          });
           await user.sendEmailVerification({
             url: window.location.href,
             handleCodeInApp: true,
