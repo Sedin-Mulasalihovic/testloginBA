@@ -16,6 +16,8 @@
         --muted: #9aa4b2;
         --navbar-height: 72px;
       }
+
+      /* GLOBAL */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -24,114 +26,116 @@
       body {
         font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
           "Helvetica Neue", Arial;
-        background: linear-gradient(180deg, #050912 0%, #050912 100%);
-        color: #e6eef6;
+        background: radial-gradient(
+          circle at 10% 10%,
+          #071025 0%,
+          #050912 50%,
+          #030612 100%
+        );
+        color: var(--text);
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
+        overflow-x: hidden;
+      }
+
+      /* FADE-IN */
+      .fade-in {
         opacity: 0;
-        animation: fadeIn 1s ease forwards;
+        transform: translateY(14px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
       }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .fade-in.visible {
+        opacity: 1;
+        transform: none;
       }
+
+      /* CARD */
       .card {
         width: 100%;
         max-width: 400px;
-        border-radius: 14px;
-        padding: 24px;
-        background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.02),
-          rgba(255, 255, 255, 0.01)
-        );
-        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.03);
-      }
-      .logo {
-        width: 70px;
-        height: 70px;
+        background: var(--glass);
         border-radius: 16px;
-        background: linear-gradient(135deg, var(--accent), #60a5fa);
+        padding: 24px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* LOGO */
+      .logo {
+        width: 88px;
+        height: 88px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-alt));
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
-        color: #042029;
-        font-size: 22px;
-        margin: 0 auto 16px;
+        font-weight: 800;
+        color: #041015;
+        font-size: 28px;
+        margin: 0 auto;
+        box-shadow: 0 6px 30px rgba(139, 92, 246, 0.35);
+        animation: logoGlow 3s ease-in-out infinite alternate;
       }
+      @keyframes logoGlow {
+        from {
+          box-shadow: 0 6px 18px rgba(139, 92, 246, 0.25);
+        }
+        to {
+          box-shadow: 0 10px 40px rgba(139, 92, 246, 0.9);
+        }
+      }
+
+      /* HEADINGS */
       h1 {
-        text-align: center;
-        font-size: 20px;
-        margin-bottom: 8px;
+        font-size: 1.8rem;
+        color: var(--accent);
       }
       .lead {
-        text-align: center;
-        color: var(--muted);
         font-size: 13px;
-        margin-bottom: 20px;
+        color: var(--muted);
       }
-      input,
+
+      /* INPUTS */
+      input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.25);
+        color: var(--text);
+        font-size: 16px;
+        outline: none;
+      }
+      input:focus {
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
+        border-color: var(--accent);
+      }
+
+      /* BUTTONS */
       button {
         width: 100%;
-        padding: 10px;
-        margin-top: 8px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        background: transparent;
-        color: inherit;
-        font-weight: 500;
-      }
-      button {
-        cursor: pointer;
-        background: linear-gradient(90deg, var(--accent), #60a5fa);
-        color: #042029;
+        padding: 10px 14px;
+        border-radius: 10px;
         border: none;
         font-weight: 700;
-        transition: 0.3s;
+        background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+        color: #041015;
+        cursor: pointer;
+        transition: transform 0.15s ease;
       }
       button:hover {
-        background: linear-gradient(90deg, var(--accent-dark), #3b82f6);
+        transform: translateY(-3px);
       }
-      .message {
-        margin-top: 12px;
-        text-align: center;
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .hidden {
-        display: none;
-      }
-      .profile {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        text-align: center;
-      }
-      .profile .email {
-        font-size: 14px;
-        color: var(--muted);
-      }
-      .logout-btn {
-        margin-top: 20px;
-        width: auto;
-        padding: 8px 18px;
-        border-radius: 8px;
-      }
+
+      /* LINKS / MESSAGES */
       .toggle-link {
-        text-align: center;
-        margin-top: 10px;
         font-size: 13px;
         color: var(--accent);
         cursor: pointer;
@@ -140,16 +144,30 @@
         color: var(--accent-dark);
         text-decoration: underline;
       }
+      .message {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 480px) {
+        .logo {
+          width: 78px;
+          height: 78px;
+          font-size: 22px;
+        }
+        .card {
+          padding: 16px;
+        }
+      }
     </style>
   </head>
   <body>
-    <div class="card" id="authCard">
+    <div class="card fade-in" id="authCard">
       <div class="logo">BA</div>
       <h1 id="formTitle">ByteAlchemy Login</h1>
       <div class="lead" id="formLead">
-        Lerne, chatte und wachse – beginne hier. | Falls sie keine email bekamen
-        checken sie ihren spam ordner und lassen sie sich die verifikations
-        email erneut senden!
+        Lerne, chatte und wachse – beginne hier.
       </div>
       <input
         id="username"
@@ -160,7 +178,7 @@
       <input id="email" type="email" placeholder="Email" />
       <input id="password" type="password" placeholder="Passwort" />
       <button id="submitBtn" onclick="signin()">Sign In</button>
-      <div class="toggle-link" onclick="toggleMode()" id="toggleLink">
+      <div class="toggle-link" id="toggleLink" onclick="toggleMode()">
         Noch kein Account? Jetzt registrieren
       </div>
       <div class="toggle-link" onclick="resetPassword()">
@@ -174,15 +192,6 @@
         Verifikationsmail erneut senden
       </div>
       <div class="message" id="message"></div>
-    </div>
-
-    <div class="card hidden" id="profileCard">
-      <div class="logo">BA</div>
-      <h1>Willkommen!</h1>
-      <div class="profile">
-        <div class="email" id="userEmail"></div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -200,8 +209,6 @@
       const db = firebase.firestore();
 
       const authCard = document.getElementById("authCard");
-      const profileCard = document.getElementById("profileCard");
-      const userEmailEl = document.getElementById("userEmail");
       const msg = document.getElementById("message");
       const usernameInput = document.getElementById("username");
       const formTitle = document.getElementById("formTitle");
@@ -212,7 +219,6 @@
 
       let isSignupMode = false;
 
-      // Toggle Login / Signup
       function toggleMode() {
         isSignupMode = !isSignupMode;
         if (isSignupMode) {
@@ -235,34 +241,13 @@
         resendLink.classList.add("hidden");
       }
 
-      // === E-Mail-Verifikationslink auswerten ===
-      async function handleVerificationFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get("mode");
-        const oobCode = urlParams.get("oobCode");
-
-        if (mode === "verifyEmail" && oobCode) {
-          try {
-            await auth.applyActionCode(oobCode);
-            msg.textContent =
-              "✅ E-Mail erfolgreich verifiziert! Bitte einloggen...";
-          } catch (err) {
-            console.error(err);
-            msg.textContent = "❌ Fehler bei der Verifikation.";
-          }
-        }
-      }
-
       // Auth Listener
       auth.onAuthStateChanged(async (user) => {
         if (user) {
           await user.reload();
-          userEmailEl.textContent = user.email;
-
           if (user.emailVerified) {
             msg.textContent = "✅ E-Mail bestätigt! Weiterleitung...";
             setTimeout(() => (window.location.href = "main.html"), 1500);
-            return;
           } else {
             msg.textContent = "⚠️ Bitte bestätige zuerst deine E-Mail-Adresse!";
             resendLink.classList.remove("hidden");
@@ -271,9 +256,7 @@
         }
       });
 
-      handleVerificationFromURL();
-
-      // === Funktionen ===
+      // SIGNUP
       async function signup() {
         const email = document.getElementById("email").value;
         const pw = document.getElementById("password").value;
@@ -285,13 +268,16 @@
             pw
           );
           const user = userCredential.user;
-          await db.collection("users").doc(user.uid).set({
-            email: user.email,
-            username: username,
-            createdAt: new Date(),
-          });
+          await db
+            .collection("users")
+            .doc(user.uid)
+            .set({
+              email: user.email,
+              username: username,
+              createdAt: new Date(),
+            });
           await user.sendEmailVerification({
-            url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
+            url: window.location.href,
             handleCodeInApp: true,
           });
           msg.textContent = `✅ Willkommen, ${username}! Bitte überprüfe deine E-Mail für die Verifikation.`;
@@ -301,6 +287,7 @@
         }
       }
 
+      // SIGNIN
       async function signin() {
         const email = document.getElementById("email").value;
         const pw = document.getElementById("password").value;
@@ -324,12 +311,13 @@
         }
       }
 
+      // PASSWORT ZURÜCKSETZEN
       async function resetPassword() {
         const email = document.getElementById("email").value;
         if (!email) return alert("Bitte gib deine E-Mail ein!");
         try {
           await auth.sendPasswordResetEmail(email, {
-            url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
+            url: window.location.href,
           });
           alert("Eine E-Mail zum Zurücksetzen des Passworts wurde verschickt!");
         } catch (e) {
@@ -337,34 +325,29 @@
         }
       }
 
-      // ✅ Neue Funktion für Verifikationsmail erneut senden
+      // VERIFIKATIONSMAIL ERNEUT SENDEN
       async function resendVerification() {
         const email = document.getElementById("email").value;
         const pw = document.getElementById("password").value;
-
         if (!email || !pw) {
           msg.textContent =
             "Bitte gib zuerst deine E-Mail und dein Passwort ein.";
           return;
         }
-
         try {
           const userCredential = await auth.signInWithEmailAndPassword(
             email,
             pw
           );
           const user = userCredential.user;
-
           if (user.emailVerified) {
             msg.textContent = "✅ Deine E-Mail ist bereits verifiziert!";
             return;
           }
-
           await user.sendEmailVerification({
-            url: "https://sedin-mulasalihovic.github.io/testloginBA/index.html",
+            url: window.location.href,
             handleCodeInApp: true,
           });
-
           msg.textContent = "📧 Verifikationsmail wurde erneut gesendet!";
           await auth.signOut();
         } catch (e) {
@@ -372,10 +355,18 @@
         }
       }
 
-      async function logout() {
-        await auth.signOut();
-        window.location.href = "index.html";
-      }
+      // Fade-in observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add("visible");
+          });
+        },
+        { threshold: 0.12 }
+      );
+      document
+        .querySelectorAll(".fade-in")
+        .forEach((el) => observer.observe(el));
     </script>
   </body>
 </html>
