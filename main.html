@@ -2,7 +2,6 @@
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <!-- Prevent mobile zoom when focusing inputs (user asked for no zoom) -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
@@ -14,21 +13,19 @@
         --card: rgba(255, 255, 255, 0.04);
         --glass: rgba(255, 255, 255, 0.06);
         --accent: #22d3ee;
-        --accent-dark: #34d399;
         --accent-alt: #8b5cf6;
         --text: #e6eef6;
         --muted: #9aa4b2;
         --navbar-height: 72px;
       }
 
-      /* global */
+      /* GLOBAL */
       html,
       body {
         height: 100%;
-        -webkit-text-size-adjust: 100%;
-      }
-      body {
         margin: 0;
+        padding: 0;
+        overflow-x: hidden;
         font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
           "Helvetica Neue", Arial;
         background: radial-gradient(
@@ -38,12 +35,12 @@
           #030612 100%
         );
         color: var(--text);
+        scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        scroll-behavior: smooth;
       }
 
-      /* NAV */
+      /* NAVBAR */
       nav.navbar {
         position: fixed;
         top: 0;
@@ -73,6 +70,7 @@
           rgba(6, 10, 18, 0.85)
         );
       }
+
       .nav-logo {
         color: var(--accent);
         font-weight: 800;
@@ -99,21 +97,55 @@
         color: var(--accent);
       }
 
-      /* sections safe area so navbar does not overlap */
-      section {
-        padding-top: calc(var(--navbar-height) + 36px);
-        padding-bottom: 60px;
-        min-height: calc(100vh - var(--navbar-height));
-        box-sizing: border-box;
+      /* Hamburger */
+      .nav-toggle {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        gap: 4px;
+      }
+      .nav-toggle span {
+        display: block;
+        width: 24px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      /* Mobile menu smooth animation */
+      .mobile-menu {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.35s ease, opacity 0.35s ease;
+        position: absolute;
+        top: var(--navbar-height);
+        right: 0;
+        background: rgba(6, 10, 18, 0.95);
+        backdrop-filter: blur(8px) saturate(1.1);
+        width: 200px;
+        border-radius: 0 0 10px 10px;
+        padding: 12px 0;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        z-index: 999;
       }
-      /* ensure anchor jumps show content below navbar */
-      section[id] {
-        scroll-margin-top: calc(var(--navbar-height) + 12px);
+      .mobile-menu.show {
+        max-height: 500px;
+        opacity: 1;
+      }
+      .mobile-menu a {
+        padding: 10px 20px;
+        display: block;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .mobile-menu a:hover {
+        background: rgba(34, 211, 238, 0.1);
+        color: var(--accent);
       }
 
       /* HERO */
@@ -152,7 +184,23 @@
         text-shadow: 0 0 10px rgba(139, 92, 246, 0.35);
       }
 
-      /* card / glass */
+      /* SECTIONS */
+      section {
+        padding-top: calc(var(--navbar-height) + 36px);
+        padding-bottom: 60px;
+        min-height: calc(100vh - var(--navbar-height));
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      section[id] {
+        scroll-margin-top: calc(var(--navbar-height)+12px);
+      }
+
+      /* CARD */
       .card {
         width: 100%;
         max-width: 760px;
@@ -170,7 +218,7 @@
         margin: 0 0 12px 0;
       }
 
-      /* chat */
+      /* CHAT */
       .chat-box {
         background: rgba(255, 255, 255, 0.03);
         border-radius: 10px;
@@ -191,7 +239,7 @@
         margin-right: 6px;
       }
 
-      /* input/button */
+      /* INPUT & BUTTON */
       input[type="text"],
       textarea {
         width: 100%;
@@ -201,7 +249,7 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(0, 0, 0, 0.25);
         color: var(--text);
-        font-size: 16px; /* prevents iOS zoom-on-focus */
+        font-size: 16px;
         outline: none;
         box-sizing: border-box;
       }
@@ -210,7 +258,6 @@
         box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
         border-color: var(--accent);
       }
-
       .controls {
         display: flex;
         gap: 12px;
@@ -231,7 +278,7 @@
         transform: translateY(-3px);
       }
 
-      /* leaderboard */
+      /* LEADERBOARD */
       #leaderboardList div {
         background: rgba(255, 255, 255, 0.035);
         padding: 10px 12px;
@@ -256,7 +303,7 @@
         transition: width 1s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
-      /* small screens */
+      /* RESPONSIVE */
       @media (max-width: 900px) {
         :root {
           --navbar-height: 64px;
@@ -274,7 +321,7 @@
           font-size: 1.6rem;
         }
         section {
-          padding-top: calc(var(--navbar-height) + 20px);
+          padding-top: calc(var(--navbar-height)+20px);
         }
         .card {
           margin: 12px;
@@ -287,7 +334,10 @@
         }
         .nav-links {
           display: none;
-        } /* compact */
+        }
+        .nav-toggle {
+          display: flex;
+        }
         .logo {
           width: 78px;
           height: 78px;
@@ -301,7 +351,7 @@
         }
       }
 
-      /* fade-in animations */
+      /* FADE-IN */
       .fade-in {
         opacity: 0;
         transform: translateY(14px);
@@ -313,16 +363,23 @@
       }
     </style>
   </head>
-
   <body>
     <!-- NAVBAR -->
     <nav class="navbar" role="navigation" aria-label="Main navigation">
       <div class="nav-logo">BA</div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </div>
       <ul class="nav-links">
         <li><a href="#chat">💬 Chat</a></li>
         <li><a href="#quests">🧩 Quests</a></li>
         <li><a href="#leaderboard">🏆 Leaderboard</a></li>
       </ul>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#chat">💬 Chat</a>
+        <a href="#quests">🧩 Quests</a>
+        <a href="#leaderboard">🏆 Leaderboard</a>
+      </div>
     </nav>
 
     <!-- HERO -->
@@ -346,7 +403,6 @@
       <div class="card">
         <h2>💬 Globaler Chat</h2>
         <div id="chatBox" class="chat-box" aria-live="polite"></div>
-
         <div style="display: flex; flex-direction: column; gap: 8px">
           <input
             id="chatInput"
@@ -384,13 +440,13 @@
       </div>
     </section>
 
-    <!-- Firebase libs (compat) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <script>
-      // ==== Firebase Setup (deine Config - bereits aus deinem Code übernommen) ====
+      // Firebase Setup
       const firebaseConfig = {
         apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
         authDomain: "bytealchemy-2ba0b.firebaseapp.com",
@@ -400,7 +456,7 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
-      // DOM
+      // DOM Elements
       const usernameDisplay = document.getElementById("usernameDisplay");
       const chatBox = document.getElementById("chatBox");
       const chatInput = document.getElementById("chatInput");
@@ -409,8 +465,14 @@
       const leaderboardList = document.getElementById("leaderboardList");
       const questsList = document.getElementById("questsList");
 
-      // Prevent mobile auto-zoom on focus: font-size >= 16px already set on inputs above.
-      // Send with Enter
+      // Hamburger menu smooth toggle
+      const navToggle = document.getElementById("navToggle");
+      const mobileMenu = document.getElementById("mobileMenu");
+      navToggle.addEventListener("click", () => {
+        mobileMenu.classList.toggle("show");
+      });
+
+      // Send message
       chatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -419,7 +481,7 @@
       });
       sendBtn.addEventListener("click", sendMessage);
 
-      // Measure and set navbar height CSS variable so sections never hidden
+      // Navbar height var
       function updateNavbarHeightVar() {
         const nav = document.querySelector("nav.navbar");
         if (!nav) return;
@@ -429,10 +491,9 @@
       window.addEventListener("load", updateNavbarHeightVar);
       window.addEventListener("resize", updateNavbarHeightVar);
 
-      // Auth state
+      // Auth
       auth.onAuthStateChanged(async (user) => {
         if (!user) {
-          // not logged in - redirect to login page
           window.location.href = "index.html";
           return;
         }
@@ -442,8 +503,6 @@
           window.location.href = "index.html";
           return;
         }
-
-        // ensure user doc has totalXP + level
         const userRef = db.collection("users").doc(user.uid);
         const doc = await userRef.get();
         if (!doc.exists) {
@@ -462,23 +521,22 @@
             });
           }
         }
-
         const username = (await userRef.get()).data().username;
         usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
-
         loadChat();
         loadQuests();
         loadLeaderboard();
         cleanupOldMessages();
-        setInterval(cleanupOldMessages, 3600000); // jede Stunde
+        setInterval(cleanupOldMessages, 3600000);
       });
 
+      // Logout
       async function logout() {
         await auth.signOut();
         window.location.href = "index.html";
       }
 
-      // Add XP in transaction
+      // XP
       async function addXP(userId, xpToAdd) {
         const userRef = db.collection("users").doc(userId);
         await db.runTransaction(async (tx) => {
@@ -491,7 +549,7 @@
         loadLeaderboard();
       }
 
-      // === Chat ===
+      // Chat functions
       async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
@@ -499,18 +557,14 @@
         if (!user) return;
         const udoc = await db.collection("users").doc(user.uid).get();
         const uname = udoc.exists ? udoc.data().username : user.email;
-
         await db.collection("messages").add({
           user: uname,
           text: text,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         chatInput.value = "";
-
-        // XP pro Nachricht
         addXP(user.uid, 5);
       }
-
       function loadChat() {
         db.collection("messages")
           .orderBy("createdAt", "asc")
@@ -536,8 +590,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
           });
       }
-
-      // Prevent XSS in chat/quests
       function escapeHtml(str) {
         if (!str) return "";
         return String(str)
@@ -547,8 +599,6 @@
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
       }
-
-      // Cleanup messages older than 1h
       async function cleanupOldMessages() {
         try {
           const oneHourAgo = new Date(Date.now() - 3600000);
@@ -569,7 +619,7 @@
         chatResetInfo.textContent = `Letzter Reset: ${now}`;
       }
 
-      // === Quests ===
+      // Quests
       async function loadQuests() {
         const snap = await db.collection("quests").get();
         questsList.innerHTML = "";
@@ -582,12 +632,11 @@
           const q = d.data();
           const wrapper = document.createElement("div");
           wrapper.style.marginBottom = "12px";
-          wrapper.innerHTML = `
-            <strong>${escapeHtml(q.title || "Quest")}</strong> (${escapeHtml(
+          wrapper.innerHTML = `<strong>${escapeHtml(
+            q.title || "Quest"
+          )}</strong> (${escapeHtml(
             q.category || ""
-          )})<br>
-            <p style="margin:6px 0">${escapeHtml(q.question || "")}</p>
-          `;
+          )})<br><p style="margin:6px 0">${escapeHtml(q.question || "")}</p>`;
           const answersDiv = document.createElement("div");
           answersDiv.style.display = "flex";
           answersDiv.style.flexWrap = "wrap";
@@ -607,7 +656,6 @@
           questsList.appendChild(wrapper);
         });
       }
-
       async function checkAnswer(questId, chosen, correct, xp) {
         if (chosen === correct) {
           alert("✅ Richtig! +" + xp + " XP");
@@ -617,18 +665,14 @@
             .doc(user.uid)
             .collection("progress")
             .doc(questId)
-            .set({
-              done: true,
-              xp: xp,
-              completedAt: new Date(),
-            });
+            .set({ done: true, xp: xp, completedAt: new Date() });
           addXP(user.uid, xp);
         } else {
           alert("❌ Falsch, versuch's nochmal!");
         }
       }
 
-      // === Leaderboard ===
+      // Leaderboard
       async function loadLeaderboard() {
         leaderboardList.innerHTML = "Lade...";
         const snap = await db
@@ -645,27 +689,22 @@
             u.username || d.id
           )}</strong> — XP: ${u.totalXP || 0}, Level: ${u.level || 0}`;
           el.appendChild(title);
-
           const barContainer = document.createElement("div");
           barContainer.className = "bar-container";
           const bar = document.createElement("div");
           bar.className = "bar";
           barContainer.appendChild(bar);
           el.appendChild(barContainer);
-
           leaderboardList.appendChild(el);
-
-          // animate width on next frame
           requestAnimationFrame(() => {
             const progress = (u.totalXP || 0) % 100;
             bar.style.width = progress + "%";
           });
-
           rank++;
         });
       }
 
-      // small UI helpers
+      // Navbar small on scroll
       window.addEventListener("scroll", () => {
         const navbar = document.querySelector(".navbar");
         if (window.scrollY > 80) navbar.classList.add("small");
@@ -673,7 +712,7 @@
         updateNavbarHeightVar();
       });
 
-      // intersection observer for fade-ins
+      // Fade-in observer
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
@@ -685,8 +724,6 @@
       document
         .querySelectorAll(".fade-in")
         .forEach((el) => observer.observe(el));
-
-      // initial navbar update (in case height changed)
       updateNavbarHeightVar();
     </script>
   </body>
