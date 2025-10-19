@@ -39,7 +39,6 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      /* NAVBAR */
       nav.navbar {
         position: fixed;
         top: 0;
@@ -69,6 +68,20 @@
           rgba(6, 10, 18, 0.85)
         );
       }
+      .logout-btn {
+        background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+        color: white;
+        cursor: pointer;
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+      }
+      button:hover {
+        background: linear-gradient(180deg, var(--accent), var(--accent-alt));
+      }
+
       .nav-logo {
         color: var(--accent);
         font-weight: 800;
@@ -95,7 +108,6 @@
         color: var(--accent);
       }
 
-      /* Hamburger */
       .nav-toggle {
         display: none;
         flex-direction: column;
@@ -110,6 +122,7 @@
         border-radius: 2px;
         transition: all 0.3s ease;
       }
+
       .mobile-menu {
         display: flex;
         flex-direction: column;
@@ -144,7 +157,6 @@
         color: var(--accent);
       }
 
-      /* HERO */
       .logo {
         width: 110px;
         height: 110px;
@@ -191,6 +203,9 @@
         justify-content: center;
         text-align: center;
       }
+      section[id] {
+        scroll-margin-top: calc(var(--navbar-height)+12px);
+      }
 
       .card {
         width: 100%;
@@ -204,8 +219,11 @@
         backdrop-filter: blur(6px) saturate(1.05);
         text-align: left;
       }
+      h2 {
+        color: var(--accent);
+        margin: 0 0 12px 0;
+      }
 
-      /* CHAT */
       .chat-box {
         background: rgba(255, 255, 255, 0.03);
         border-radius: 10px;
@@ -239,6 +257,12 @@
         outline: none;
         box-sizing: border-box;
       }
+      input[type="text"]:focus,
+      textarea:focus {
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
+        border-color: var(--accent);
+      }
+
       .controls {
         display: flex;
         gap: 12px;
@@ -255,8 +279,10 @@
         color: #041015;
         transition: transform 0.15s ease;
       }
+      .controls .btn:hover {
+        transform: translateY(-3px);
+      }
 
-      /* LEADERBOARD */
       #leaderboardList div {
         background: rgba(255, 255, 255, 0.035);
         padding: 10px 12px;
@@ -281,7 +307,31 @@
         transition: width 1s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
-      /* RESPONSIVE: Handys */
+      @media (max-width: 900px) {
+        :root {
+          --navbar-height: 64px;
+        }
+        nav.navbar {
+          padding: 0 18px;
+        }
+        .logo {
+          width: 88px;
+          height: 88px;
+          font-size: 28px;
+          border-radius: 16px;
+        }
+        h1 {
+          font-size: 1.6rem;
+        }
+        section {
+          padding-top: calc(var(--navbar-height)+20px);
+        }
+        .card {
+          margin: 12px;
+          padding: 16px;
+        }
+      }
+
       @media (max-width: 480px) {
         :root {
           --navbar-height: 56px;
@@ -292,70 +342,33 @@
         .nav-toggle {
           display: flex;
         }
-
-        /* Hero & Logo */
         .logo {
-          width: 68px;
-          height: 68px;
-          font-size: 20px;
+          width: 78px;
+          height: 78px;
+          font-size: 22px;
         }
-        h1 {
-          font-size: 1.4rem;
-        }
-        #usernameDisplay {
-          font-size: 1rem;
-        }
-
-        /* Karten kompakter */
-        .card {
-          margin: 8px;
-          padding: 12px;
-        }
-
-        /* Chat */
-        .chat-box {
-          max-height: 30vh;
-          min-height: 140px;
-          padding: 8px;
-        }
-        .message {
-          font-size: 13px;
-        }
-        #chatInput {
-          padding: 8px;
-          font-size: 14px;
-        }
-        .controls .btn {
-          padding: 6px 10px;
-          font-size: 13px;
-        }
-
-        /* Quests */
-        #questsList div {
-          margin-bottom: 8px;
-          font-size: 14px;
-        }
-        #questsList button.btn {
-          padding: 6px 8px;
-          font-size: 13px;
-        }
-
-        /* Leaderboard */
-        #leaderboardList div {
-          padding: 8px 10px;
-          gap: 6px;
-          font-size: 13px;
-        }
-        .bar-container {
-          height: 10px;
-        }
-
         .controls {
           flex-direction: column;
         }
+        .chat-box {
+          max-height: 40vh;
+        }
+
+        /* Quests kompakt */
+        #questsList div {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          margin-bottom: 10px;
+          font-size: 14px;
+        }
+        #questsList button.btn {
+          width: 100%;
+          padding: 6px 8px;
+          font-size: 13px;
+        }
       }
 
-      /* FADE-IN */
       .fade-in {
         opacity: 0;
         transform: translateY(14px);
@@ -378,11 +391,15 @@
         <li><a href="#chat">💬 Chat</a></li>
         <li><a href="#quests">🧩 Quests</a></li>
         <li><a href="#leaderboard">🏆 Leaderboard</a></li>
+        <li>
+          <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </li>
       </ul>
       <div class="mobile-menu" id="mobileMenu">
         <a href="#chat">💬 Chat</a>
         <a href="#quests">🧩 Quests</a>
         <a href="#leaderboard">🏆 Leaderboard</a>
+        <button onclick="logout()">🚪 Logout</button>
       </div>
     </nav>
 
@@ -441,7 +458,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <script>
-      // Firebase Setup
       const firebaseConfig = {
         apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
         authDomain: "bytealchemy-2ba0b.firebaseapp.com",
@@ -451,7 +467,6 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
-      // DOM Elements
       const usernameDisplay = document.getElementById("usernameDisplay");
       const chatBox = document.getElementById("chatBox");
       const chatInput = document.getElementById("chatInput");
@@ -460,14 +475,12 @@
       const leaderboardList = document.getElementById("leaderboardList");
       const questsList = document.getElementById("questsList");
 
-      // Hamburger menu toggle
       const navToggle = document.getElementById("navToggle");
       const mobileMenu = document.getElementById("mobileMenu");
       navToggle.addEventListener("click", () => {
         mobileMenu.classList.toggle("show");
       });
 
-      // Send message
       chatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -476,17 +489,17 @@
       });
       sendBtn.addEventListener("click", sendMessage);
 
-      // Navbar height var
       function updateNavbarHeightVar() {
         const nav = document.querySelector("nav.navbar");
         if (!nav) return;
-        const h = nav.offsetHeight;
-        document.documentElement.style.setProperty("--navbar-height", h + "px");
+        document.documentElement.style.setProperty(
+          "--navbar-height",
+          nav.offsetHeight + "px"
+        );
       }
       window.addEventListener("load", updateNavbarHeightVar);
       window.addEventListener("resize", updateNavbarHeightVar);
 
-      // Auth
       auth.onAuthStateChanged(async (user) => {
         if (!user) {
           window.location.href = "index.html";
@@ -507,6 +520,14 @@
             totalXP: 0,
             level: 0,
           });
+        } else {
+          const data = doc.data();
+          if (data.totalXP === undefined || data.level === undefined) {
+            await userRef.update({
+              totalXP: data.totalXP || 0,
+              level: data.level || 0,
+            });
+          }
         }
         const username = (await userRef.get()).data().username;
         usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
@@ -521,7 +542,6 @@
         await auth.signOut();
         window.location.href = "index.html";
       }
-
       async function addXP(userId, xpToAdd) {
         const userRef = db.collection("users").doc(userId);
         await db.runTransaction(async (tx) => {
@@ -549,7 +569,6 @@
         chatInput.value = "";
         addXP(user.uid, 5);
       }
-
       function loadChat() {
         db.collection("messages")
           .orderBy("createdAt", "asc")
@@ -558,13 +577,13 @@
             snap.forEach((d) => {
               const m = d.data();
               const div = document.createElement("div");
-              div.classList.add("message");
               const time = m.createdAt
                 ? m.createdAt.toDate().toLocaleTimeString("de-DE", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })
                 : "";
+              div.classList.add("message");
               div.innerHTML = `<span class="user">${escapeHtml(
                 m.user
               )}</span>: ${escapeHtml(
@@ -575,7 +594,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
           });
       }
-
       function escapeHtml(str) {
         if (!str) return "";
         return String(str)
@@ -585,7 +603,6 @@
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
       }
-
       async function cleanupOldMessages() {
         try {
           const oneHourAgo = new Date(Date.now() - 3600000);
@@ -625,6 +642,7 @@
           )})<br><p style="margin:6px 0">${escapeHtml(q.question || "")}</p>`;
           const answersDiv = document.createElement("div");
           answersDiv.style.display = "flex";
+          answersDiv.style.flexDirection = "row";
           answersDiv.style.flexWrap = "wrap";
           answersDiv.style.gap = "8px";
           (q.answers || []).forEach((a, i) => {
