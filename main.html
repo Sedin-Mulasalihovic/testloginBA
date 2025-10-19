@@ -19,7 +19,6 @@
         --navbar-height: 72px;
       }
 
-      /* GLOBAL */
       html,
       body {
         height: 100%;
@@ -70,7 +69,6 @@
           rgba(6, 10, 18, 0.85)
         );
       }
-
       .nav-logo {
         color: var(--accent);
         font-weight: 800;
@@ -112,8 +110,6 @@
         border-radius: 2px;
         transition: all 0.3s ease;
       }
-
-      /* Mobile menu smooth animation */
       .mobile-menu {
         display: flex;
         flex-direction: column;
@@ -184,7 +180,6 @@
         text-shadow: 0 0 10px rgba(139, 92, 246, 0.35);
       }
 
-      /* SECTIONS */
       section {
         padding-top: calc(var(--navbar-height) + 36px);
         padding-bottom: 60px;
@@ -196,11 +191,7 @@
         justify-content: center;
         text-align: center;
       }
-      section[id] {
-        scroll-margin-top: calc(var(--navbar-height)+12px);
-      }
 
-      /* CARD */
       .card {
         width: 100%;
         max-width: 760px;
@@ -212,10 +203,6 @@
         border: 1px solid rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(6px) saturate(1.05);
         text-align: left;
-      }
-      h2 {
-        color: var(--accent);
-        margin: 0 0 12px 0;
       }
 
       /* CHAT */
@@ -239,7 +226,6 @@
         margin-right: 6px;
       }
 
-      /* INPUT & BUTTON */
       input[type="text"],
       textarea {
         width: 100%;
@@ -252,11 +238,6 @@
         font-size: 16px;
         outline: none;
         box-sizing: border-box;
-      }
-      input[type="text"]:focus,
-      textarea:focus {
-        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
-        border-color: var(--accent);
       }
       .controls {
         display: flex;
@@ -273,9 +254,6 @@
         background: linear-gradient(90deg, var(--accent), var(--accent-alt));
         color: #041015;
         transition: transform 0.15s ease;
-      }
-      .controls .btn:hover {
-        transform: translateY(-3px);
       }
 
       /* LEADERBOARD */
@@ -303,31 +281,7 @@
         transition: width 1s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
-      /* RESPONSIVE */
-      @media (max-width: 900px) {
-        :root {
-          --navbar-height: 64px;
-        }
-        nav.navbar {
-          padding: 0 18px;
-        }
-        .logo {
-          width: 88px;
-          height: 88px;
-          font-size: 28px;
-          border-radius: 16px;
-        }
-        h1 {
-          font-size: 1.6rem;
-        }
-        section {
-          padding-top: calc(var(--navbar-height)+20px);
-        }
-        .card {
-          margin: 12px;
-          padding: 16px;
-        }
-      }
+      /* RESPONSIVE: Handys */
       @media (max-width: 480px) {
         :root {
           --navbar-height: 56px;
@@ -338,16 +292,66 @@
         .nav-toggle {
           display: flex;
         }
+
+        /* Hero & Logo */
         .logo {
-          width: 78px;
-          height: 78px;
-          font-size: 22px;
+          width: 68px;
+          height: 68px;
+          font-size: 20px;
         }
+        h1 {
+          font-size: 1.4rem;
+        }
+        #usernameDisplay {
+          font-size: 1rem;
+        }
+
+        /* Karten kompakter */
+        .card {
+          margin: 8px;
+          padding: 12px;
+        }
+
+        /* Chat */
+        .chat-box {
+          max-height: 30vh;
+          min-height: 140px;
+          padding: 8px;
+        }
+        .message {
+          font-size: 13px;
+        }
+        #chatInput {
+          padding: 8px;
+          font-size: 14px;
+        }
+        .controls .btn {
+          padding: 6px 10px;
+          font-size: 13px;
+        }
+
+        /* Quests */
+        #questsList div {
+          margin-bottom: 8px;
+          font-size: 14px;
+        }
+        #questsList button.btn {
+          padding: 6px 8px;
+          font-size: 13px;
+        }
+
+        /* Leaderboard */
+        #leaderboardList div {
+          padding: 8px 10px;
+          gap: 6px;
+          font-size: 13px;
+        }
+        .bar-container {
+          height: 10px;
+        }
+
         .controls {
           flex-direction: column;
-        }
-        .chat-box {
-          max-height: 40vh;
         }
       }
 
@@ -387,15 +391,6 @@
       <div class="logo">BA</div>
       <h1>Willkommen bei ByteAlchemy</h1>
       <p id="usernameDisplay">Lade Benutzerinformationen...</p>
-      <div style="margin-top: 12px">
-        <button
-          class="btn logout-btn controls"
-          style="max-width: 160px"
-          onclick="logout()"
-        >
-          Logout
-        </button>
-      </div>
     </section>
 
     <!-- CHAT -->
@@ -465,7 +460,7 @@
       const leaderboardList = document.getElementById("leaderboardList");
       const questsList = document.getElementById("questsList");
 
-      // Hamburger menu smooth toggle
+      // Hamburger menu toggle
       const navToggle = document.getElementById("navToggle");
       const mobileMenu = document.getElementById("mobileMenu");
       navToggle.addEventListener("click", () => {
@@ -512,14 +507,6 @@
             totalXP: 0,
             level: 0,
           });
-        } else {
-          const data = doc.data();
-          if (data.totalXP === undefined || data.level === undefined) {
-            await userRef.update({
-              totalXP: data.totalXP || 0,
-              level: data.level || 0,
-            });
-          }
         }
         const username = (await userRef.get()).data().username;
         usernameDisplay.textContent = `👋 Willkommen, ${username}!`;
@@ -530,13 +517,11 @@
         setInterval(cleanupOldMessages, 3600000);
       });
 
-      // Logout
       async function logout() {
         await auth.signOut();
         window.location.href = "index.html";
       }
 
-      // XP
       async function addXP(userId, xpToAdd) {
         const userRef = db.collection("users").doc(userId);
         await db.runTransaction(async (tx) => {
@@ -549,7 +534,6 @@
         loadLeaderboard();
       }
 
-      // Chat functions
       async function sendMessage() {
         const text = chatInput.value.trim();
         if (!text) return;
@@ -565,6 +549,7 @@
         chatInput.value = "";
         addXP(user.uid, 5);
       }
+
       function loadChat() {
         db.collection("messages")
           .orderBy("createdAt", "asc")
@@ -590,6 +575,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
           });
       }
+
       function escapeHtml(str) {
         if (!str) return "";
         return String(str)
@@ -599,6 +585,7 @@
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
       }
+
       async function cleanupOldMessages() {
         try {
           const oneHourAgo = new Date(Date.now() - 3600000);
@@ -619,7 +606,6 @@
         chatResetInfo.textContent = `Letzter Reset: ${now}`;
       }
 
-      // Quests
       async function loadQuests() {
         const snap = await db.collection("quests").get();
         questsList.innerHTML = "";
@@ -656,6 +642,7 @@
           questsList.appendChild(wrapper);
         });
       }
+
       async function checkAnswer(questId, chosen, correct, xp) {
         if (chosen === correct) {
           alert("✅ Richtig! +" + xp + " XP");
@@ -672,7 +659,6 @@
         }
       }
 
-      // Leaderboard
       async function loadLeaderboard() {
         leaderboardList.innerHTML = "Lade...";
         const snap = await db
@@ -704,7 +690,6 @@
         });
       }
 
-      // Navbar small on scroll
       window.addEventListener("scroll", () => {
         const navbar = document.querySelector(".navbar");
         if (window.scrollY > 80) navbar.classList.add("small");
@@ -712,7 +697,6 @@
         updateNavbarHeightVar();
       });
 
-      // Fade-in observer
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
