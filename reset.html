@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ByteAlchemy - Passwort zurücksetzen</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(
+          circle at 10% 10%,
+          #071025 0%,
+          #050912 50%,
+          #030612 100%
+        );
+        font-family: Inter, system-ui, sans-serif;
+        color: #e6eef6;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 32px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        color: #22d3ee;
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+      }
+      p {
+        font-size: 14px;
+        color: #9aa4b2;
+        margin-bottom: 20px;
+      }
+      input[type="email"] {
+        width: 93%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.25);
+        color: #e6eef6;
+        font-size: 16px;
+        outline: none;
+        margin-bottom: 16px;
+      }
+      input[type="email"]:focus {
+        border-color: #22d3ee;
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #22d3ee, #8b5cf6);
+        color: #041015;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        transform: translateY(-2px);
+      }
+      .msg {
+        margin-top: 12px;
+        font-size: 14px;
+        color: #9aa4b2;
+      }
+      a {
+        color: #22d3ee;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 16px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>🔒 Passwort zurücksetzen</h1>
+      <p>Gib deine E-Mail ein, um den Link zum Zurücksetzen zu erhalten.</p>
+      <input type="email" id="email" placeholder="E-Mail-Adresse" />
+      <button id="resetBtn">Link senden</button>
+      <div class="msg" id="msg"></div>
+      <a href="index.html">← Zurück zum Login</a>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
+        authDomain: "bytealchemy-2ba0b.firebaseapp.com",
+        projectId: "bytealchemy-2ba0b",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      const emailInput = document.getElementById("email");
+      const resetBtn = document.getElementById("resetBtn");
+      const msg = document.getElementById("msg");
+
+      resetBtn.addEventListener("click", async () => {
+        const email = emailInput.value.trim();
+        if (!email) {
+          msg.textContent = "Bitte gib deine E-Mail-Adresse ein.";
+          return;
+        }
+        try {
+          await auth.sendPasswordResetEmail(email);
+          msg.style.color = "#22d3ee";
+          msg.textContent = "📩 E-Mail zum Zurücksetzen wurde gesendet!";
+        } catch (error) {
+          msg.style.color = "#f87171";
+          if (error.code === "auth/user-not-found")
+            msg.textContent = "Kein Konto mit dieser E-Mail gefunden.";
+          else msg.textContent = "Fehler: " + error.message;
+        }
+      });
+    </script>
+  </body>
+</html>

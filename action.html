@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firebase Aktion - ByteAlchemy</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(
+          circle at 10% 10%,
+          #071025 0%,
+          #050912 50%,
+          #030612 100%
+        );
+        font-family: Inter, system-ui, sans-serif;
+        color: #e6eef6;
+        text-align: center;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 32px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        color: #22d3ee;
+      }
+      input[type="password"] {
+        width: 100%;
+        margin-top: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e6eef6;
+      }
+      button {
+        margin-top: 14px;
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(90deg, #22d3ee, #8b5cf6);
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        color: #041015;
+        cursor: pointer;
+      }
+      .msg {
+        margin-top: 12px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1 id="title">Lade...</h1>
+      <div id="content"></div>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCUUJ-Cjx2fS3d4z4BGy_wYMvg91HSUd08",
+        authDomain: "bytealchemy-2ba0b.firebaseapp.com",
+        projectId: "bytealchemy-2ba0b",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get("mode");
+      const oobCode = params.get("oobCode");
+      const msg = document.getElementById("msg");
+      const title = document.getElementById("title");
+      const content = document.getElementById("content");
+
+      if (mode === "resetPassword") {
+        title.textContent = "🔑 Neues Passwort setzen";
+        content.innerHTML = `
+        <input type="password" id="newPass" placeholder="Neues Passwort" />
+        <button id="confirmBtn">Passwort ändern</button>
+      `;
+        document.getElementById("confirmBtn").onclick = async () => {
+          const newPass = document.getElementById("newPass").value;
+          if (newPass.length < 6)
+            return (msg.textContent = "Mindestens 6 Zeichen.");
+          try {
+            await auth.confirmPasswordReset(oobCode, newPass);
+            msg.style.color = "#22d3ee";
+            msg.textContent = "✅ Passwort erfolgreich geändert!";
+            setTimeout(() => (window.location.href = "index.html"), 2000);
+          } catch (e) {
+            msg.style.color = "#f87171";
+            msg.textContent = e.message;
+          }
+        };
+      } else if (mode === "verifyEmail") {
+        title.textContent = "📧 E-Mail bestätigen";
+        (async () => {
+          try {
+            await auth.applyActionCode(oobCode);
+            msg.style.color = "#22d3ee";
+            msg.textContent = "✅ E-Mail erfolgreich bestätigt!";
+            setTimeout(() => (window.location.href = "index.html"), 2000);
+          } catch (e) {
+            msg.style.color = "#f87171";
+            msg.textContent = "Fehler: " + e.message;
+          }
+        })();
+      } else {
+        title.textContent = "❓ Unbekannte Aktion";
+        msg.textContent = "Dieser Link ist nicht gültig oder abgelaufen.";
+      }
+    </script>
+  </body>
+</html>
