@@ -25,10 +25,22 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 16px;
         padding: 32px;
-        width: 90%;
+        width: 95%;
         max-width: 400px;
         text-align: center;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+      .card:hover {
+        animation: logoGlow 3s ease-in-out infinite alternate;
+        box-shadow: 0 6px 30px rgba(139, 92, 246, 0.35);
+      }
+      @keyframes logoGlow {
+        from {
+          box-shadow: 0 6px 18px rgba(139, 92, 246, 0.25);
+        }
+        to {
+          box-shadow: 0 10px 40px rgba(139, 92, 246, 0.9);
+        }
       }
       h1 {
         color: #22d3ee;
@@ -36,7 +48,7 @@
         margin-bottom: 12px;
       }
       input[type="password"] {
-        width: 100%;
+        width: 94%;
         padding: 12px;
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.08);
